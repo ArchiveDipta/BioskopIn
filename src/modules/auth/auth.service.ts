@@ -1,0 +1,81 @@
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { StorageService } from 'src/modules/storage/storage.service';
+import { OAuth2Client } from 'google-auth-library';
+
+@Injectable()
+export class AuthService {
+  private googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+    private readonly storageService: StorageService,
+  ) {}
+
+  async validateOAuthLogin(profile: any) {
+    let user = await this.prisma.user.findUnique({
+      where: { email: profile.email },
+    });
+
+    if (!user) {
+      let avatarUrl: string | null = null;
+      if (profile.picture) {
+        try {
+          const response = await fetch(profile.picture);
+          const arrayBuffer = await response.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          const filename = `profiles/${profile.email.replace(/[@.]/g, '_')}_${Date.now()}.jpg`;
+          
+          // Mengunggah gambar profil asli Google ke Supabase Storage
+          avatarUrl = await this.storageService.uploadFile('avatars', filename, buffer, 'image/jpeg');
+        } catch (error) {
+          console.error('Gagal upload gambar google ke supabase', error);
+        }
+      }
+
+      user = await this.prisma.user.create({
+        data: {
+          email: profile.email,
+          name: `${profile.firstName} ${profile.lastName}`.trim(),
+          image: avatarUrl || profile.picture, // Fallback ke URL asli jika upload gagal
+        },
+      });
+    }
+
+    const payload = { email: user.email, sub: user.id, role: user.role };
+    return {
+      access_token: this.jwtService.sign(payload),
+      user,
+    };
+  }
+
+  async verifyAndroidToken(idToken: string) {
+    try {
+      // Verifikasi token dengan Google Server
+      const ticket = await this.googleClient.verifyIdToken({
+        idToken,
+        audience: process.env.GOOGLE_CLIENT_ID, 
+      });
+      
+      const payload = ticket.getPayload();
+      if (!payload || !payload.email) {
+        throw new UnauthorizedException('Token tidak valid atau tidak memiliki email');
+      }
+
+      // Gunakan logika yang sama seperti validateOAuthLogin untuk menyimpan user
+      const mockProfile = {
+        email: payload.email,
+        firstName: payload.given_name || '',
+        lastName: payload.family_name || '',
+        picture: payload.picture,
+      };
+
+      return this.validateOAuthLogin(mockProfile);
+    } catch (error) {
+      console.error('Verifikasi Token Google Gagal:', error);
+      throw new UnauthorizedException('Gagal memverifikasi token dari Google');
+    }
+  }
+}
