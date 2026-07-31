@@ -1,98 +1,103 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# BioskopIn Backend API 🎬🍿
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A progressive Node.js backend application built with **NestJS**, **Prisma ORM**, and **MySQL**, designed to power a modern cinema ticketing platform (BioskopIn). It provides robust and secure APIs for managing movies, studios, seating, showtimes, and an end-to-end ticketing system.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Key Features
 
-## Description
+### 1. Authentication & Authorization (RBAC)
+- **Google OAuth 2.0 Integration**: Supports seamless login via Google for both **Web Clients** (via redirection) and **Native Android Clients** (via ID Token verification).
+- **Custom JWT Generation**: Generates secure JSON Web Tokens for stateless authentication.
+- **Role-Based Access Control (RBAC)**: Enforces strict access boundaries using custom `@Roles()` decorators (`ADMIN` vs `CUSTOMER`).
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 2. Avatar Storage & Supabase Integration
+- Automatically intercepts users' Google profile pictures, downloads them, and securely re-uploads them to an AWS S3-compatible **Supabase Storage** bucket for permanent caching and hosting.
 
-## Project setup
+### 3. Master Data Management
+- **Studios & Smart Seating**: Admins can create a studio by simply providing rows (e.g., A to L) and capacity. The system automatically generates and indexes every single seat (e.g., A1, A2... L14).
+- **Movies & Showtimes**: Complete CRUD operations to manage now-playing movies, descriptions, durations, and trailer URLs, linked directly to specific studios and air-times.
 
+### 4. Robust Ticketing & Order System
+- **Double-Booking Prevention**: Built with strict Prisma Transactions (`$transaction`) and database-level unique constraints (`@@unique([showtimeId, seatId])`) to guarantee that two customers can never book the exact same seat simultaneously.
+- **Order Tracking**: Customers can check out multiple seats in one cart, track their transaction status (`PENDING`, `SUCCESS`, `CANCELLED`), and receive an automatically generated 8-character unique `bookingCode`.
+
+### 5. Automated Seeding & Analytics
+- Pre-configured `npx prisma db seed` script to easily populate the database with mock movies, standard XXI-sized studios (168 seats), dummy showtimes, and an Admin account.
+- **Admin Dashboard Analytics**: Dedicated endpoints to retrieve top-performing movies based on ticket sales and total revenue aggregations.
+
+### 6. Interactive API Documentation
+- Fully integrated with **Swagger UI**. Developers can visit `/api` (or `/docs`) to explore all available endpoints, required payload schemas, and test them directly from the browser using Bearer Token authorization.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: [NestJS](https://nestjs.com/) v11
+- **Language**: TypeScript
+- **Database**: MySQL (via XAMPP / Laragon)
+- **ORM**: [Prisma](https://www.prisma.io/)
+- **Validation**: Zod (via `nestjs-zod`)
+- **Cloud Storage**: Supabase Storage
+- **Authentication**: Passport.js, Google Auth Library, JWT
+
+---
+
+## ⚙️ Getting Started
+
+### Prerequisites
+- Node.js (v20+ recommended)
+- MySQL Server running on `localhost:3306`
+
+### Installation
 ```bash
+# Install dependencies
 $ npm install
 ```
 
-## Compile and run the project
+### Environment Configuration
+Create a `.env` file in the root directory and configure the following variables:
+```env
+# Database
+DATABASE_URL="mysql://root:@localhost:3306/bioskopin_db"
 
+# JWT Secret
+JWT_SECRET="your_super_secret_jwt_key"
+
+# Supabase Storage
+SUPABASE_URL="https://your-project-id.supabase.co"
+SUPABASE_KEY="your-anon-or-service-key"
+
+# Google OAuth
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+GOOGLE_CALLBACK_URL="http://localhost:3000/auth/google/callback"
+```
+
+### Database Setup
 ```bash
-# development
+# Sync Prisma schema with MySQL database
+$ npx prisma db push
+
+# Generate Prisma Client
+$ npx prisma generate
+
+# Populate database with dummy data
+$ npx prisma db seed
+```
+
+### Running the App
+```bash
+# Development
 $ npm run start
 
-# watch mode
+# Watch mode (Hot Reload)
 $ npm run start:dev
 
-# production mode
+# Production mode
 $ npm run start:prod
 ```
 
-## Run tests
+## 👨‍💻 Contributing
+This project is built as a core backend system. Frontend developers (Web/Android) can refer to the Swagger documentation at `http://localhost:3000/api` for API contracts and payload requirements.
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 📄 License
+This project is [MIT licensed](LICENSE).
