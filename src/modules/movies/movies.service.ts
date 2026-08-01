@@ -28,4 +28,17 @@ export class MoviesService {
       },
     });
   }
+
+  async update(id: string, updateMovieDto: any) {
+    return this.prisma.movie.update({
+      where: { id },
+      data: updateMovieDto,
+    });
+  }
+
+  async remove(id: string) {
+    return this.prisma.movie.delete({
+      where: { id },
+    });
+  }
 }

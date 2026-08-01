@@ -41,4 +41,21 @@ export class ShowtimesService {
 
     return seatsWithAvailability;
   }
+
+  async update(id: string, updateShowtimeDto: any) {
+    const data: any = { ...updateShowtimeDto };
+    if (data.startTime) {
+      data.startTime = new Date(data.startTime);
+    }
+    return this.prisma.showtime.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async remove(id: string) {
+    return this.prisma.showtime.delete({
+      where: { id },
+    });
+  }
 }

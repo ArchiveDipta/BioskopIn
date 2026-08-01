@@ -1,7 +1,7 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
-const MovieSchema = z.object({
+export const MovieSchema = z.object({
   title: z.string().min(1, 'Judul wajib diisi'),
   description: z.string().optional(),
   duration: z.number().int().positive('Durasi harus angka positif'),
