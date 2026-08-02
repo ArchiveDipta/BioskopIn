@@ -10,12 +10,15 @@ export class AppController {
   getHello(): string {
     return `
       <html>
-        <head><title>BioskopIn API</title></head>
+        <head>
+          <title>BioskopIn</title>
+          <meta name="google-site-verification" content="TmZ3HLVSodfnpHo9g0A2MPcufqhBxPJMXeDbzENMyHA" />
+        </head>
         <body style="font-family: sans-serif; text-align: center; padding: 50px;">
-          <h1>Selamat Datang di BioskopIn API 🎬</h1>
-          <p>Ini adalah server backend resmi untuk aplikasi BioskopIn.</p>
+          <h1>BioskopIn</h1>
+          <p>BioskopIn is a comprehensive movie ticketing platform. Our application allows users to securely log in, browse currently showing movies, view real-time seat availability in studios, and book tickets for their favorite showtimes seamlessly.</p>
           <a href="/api">Buka Dokumentasi API (Swagger)</a><br><br>
-          <a href="/privacy-policy">Kebijakan Privasi</a> | <a href="/terms-of-service">Syarat & Ketentuan</a>
+          <a href="/privacy-policy">Privacy Policy (Kebijakan Privasi)</a> | <a href="/terms-of-service">Terms of Service (Syarat & Ketentuan)</a>
         </body>
       </html>
     `;
