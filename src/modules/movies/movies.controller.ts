@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
-import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -16,9 +17,11 @@ export class MoviesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  @ApiOperation({ summary: 'Menambahkan film baru (Khusus Admin)' })
-  create(@Body() createMovieDto: CreateMovieDto) {
-    return this.moviesService.create(createMovieDto);
+  @UseInterceptors(FileInterceptor('poster'))
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiOperation({ summary: 'Menambahkan film baru & upload poster (Khusus Admin)' })
+  create(@Body() createMovieDto: CreateMovieDto, @UploadedFile() file?: Express.Multer.File) {
+    return this.moviesService.create(createMovieDto, file);
   }
 
   @Get()
@@ -31,9 +34,11 @@ export class MoviesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  @ApiOperation({ summary: 'Mengubah data film (Khusus Admin)' })
-  update(@Param('id') id: string, @Body() updateMovieDto: UpdateMovieDto) {
-    return this.moviesService.update(id, updateMovieDto);
+  @UseInterceptors(FileInterceptor('poster'))
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiOperation({ summary: 'Mengubah data film & update poster (Khusus Admin)' })
+  update(@Param('id') id: string, @Body() updateMovieDto: UpdateMovieDto, @UploadedFile() file?: Express.Multer.File) {
+    return this.moviesService.update(id, updateMovieDto, file);
   }
 
   @Delete(':id')
