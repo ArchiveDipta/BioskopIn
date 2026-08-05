@@ -41,7 +41,7 @@ model Session {
 }
 
 enum Role {
-  CUSTOMER
+  USER
   ADMIN
 }
 
@@ -52,7 +52,7 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?   // Optional if using Google Login
-  role          Role      @default(CUSTOMER)
+  role          Role      @default(USER)
   
   accounts      Account[]
   sessions      Session[]
