@@ -5,16 +5,18 @@ A progressive Node.js backend application built with **NestJS**, **Prisma ORM**,
 ## 🚀 Key Features
 
 ### 1. Authentication & Authorization (RBAC)
+- **Local Authentication**: Supports standard registration and login using Email and Password (secured with `bcryptjs`).
 - **Google OAuth 2.0 Integration**: Supports seamless login via Google for both **Web Clients** (via redirection) and **Native Android Clients** (via ID Token verification).
 - **Custom JWT Generation**: Generates secure JSON Web Tokens for stateless authentication.
-- **Role-Based Access Control (RBAC)**: Enforces strict access boundaries using custom `@Roles()` decorators (`ADMIN` vs `CUSTOMER`).
+- **Role-Based Access Control (RBAC)**: Enforces strict access boundaries using custom `@Roles()` decorators (`ADMIN` vs `USER`). All new sign-ups default to the `USER` role.
 
-### 2. Avatar Storage & Supabase Integration
-- Automatically intercepts users' Google profile pictures, downloads them, and securely re-uploads them to an AWS S3-compatible **Supabase Storage** bucket for permanent caching and hosting.
+### 2. File Storage & Supabase Integration
+- **User Avatars**: Automatically intercepts users' Google profile pictures, downloads them, and securely re-uploads them to an AWS S3-compatible **Supabase Storage** bucket (`avatars`).
+- **Movie Posters**: Supports `multipart/form-data` uploads for movie posters. Images are automatically uploaded to the `movie-posters` bucket in Supabase during Movie creation/update operations.
 
 ### 3. Master Data Management
 - **Studios & Smart Seating**: Admins can create a studio by simply providing rows (e.g., A to L) and capacity. The system automatically generates and indexes every single seat (e.g., A1, A2... L14).
-- **Movies & Showtimes**: Complete CRUD operations to manage now-playing movies, descriptions, durations, and trailer URLs, linked directly to specific studios and air-times.
+- **Movies & Showtimes**: Complete CRUD operations to manage now-playing movies, descriptions, durations, and trailer URLs, linked directly to specific studios and air-times. Include automated poster uploads.
 
 ### 4. Robust Ticketing & Order System
 - **Double-Booking Prevention**: Built with strict Prisma Transactions (`$transaction`) and database-level unique constraints (`@@unique([showtimeId, seatId])`) to guarantee that two customers can never book the exact same seat simultaneously.
