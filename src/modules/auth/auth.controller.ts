@@ -40,13 +40,10 @@ export class AuthController {
   @ApiOperation({ summary: 'Callback dari Google (Jangan dipanggil manual)' })
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req, @Res() res) {
-    // Menerima data profile dari GoogleStrategy
-    const jwt = await this.authService.validateOAuthLogin(req.user);
-    
-    // Di dunia nyata, Anda mungkin me-redirect kembali ke frontend (React/Vue/Next.js) dengan membawa token ini di URL atau Cookie
+    // req.user sudah berisi hasil dari validateOAuthLogin() yang dipanggil di google.strategy.ts
     return res.json({
       message: 'Login Berhasil',
-      ...jwt,
+      ...req.user,
     });
   }
 }
