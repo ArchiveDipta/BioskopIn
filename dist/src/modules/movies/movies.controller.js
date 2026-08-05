@@ -14,8 +14,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MoviesController = void 0;
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
 const movies_service_1 = require("./movies.service");
 const create_movie_dto_1 = require("./dto/create-movie.dto");
+const update_movie_dto_1 = require("./dto/update-movie.dto");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../common/guards/jwt-auth.guard");
 const roles_guard_1 = require("../../common/guards/roles.guard");
@@ -25,11 +27,17 @@ let MoviesController = class MoviesController {
     constructor(moviesService) {
         this.moviesService = moviesService;
     }
-    create(createMovieDto) {
-        return this.moviesService.create(createMovieDto);
+    create(createMovieDto, file) {
+        return this.moviesService.create(createMovieDto, file);
     }
     findAll() {
         return this.moviesService.findAllActive();
+    }
+    update(id, updateMovieDto, file) {
+        return this.moviesService.update(id, updateMovieDto, file);
+    }
+    remove(id) {
+        return this.moviesService.remove(id);
     }
 };
 exports.MoviesController = MoviesController;
@@ -38,10 +46,13 @@ __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),
-    (0, swagger_1.ApiOperation)({ summary: 'Menambahkan film baru (Khusus Admin)' }),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('poster')),
+    (0, swagger_1.ApiConsumes)('multipart/form-data', 'application/json'),
+    (0, swagger_1.ApiOperation)({ summary: 'Menambahkan film baru & upload poster (Khusus Admin)' }),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_movie_dto_1.CreateMovieDto]),
+    __metadata("design:paramtypes", [create_movie_dto_1.CreateMovieDto, Object]),
     __metadata("design:returntype", void 0)
 ], MoviesController.prototype, "create", null);
 __decorate([
@@ -51,6 +62,32 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], MoviesController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('poster')),
+    (0, swagger_1.ApiConsumes)('multipart/form-data', 'application/json'),
+    (0, swagger_1.ApiOperation)({ summary: 'Mengubah data film & update poster (Khusus Admin)' }),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_movie_dto_1.UpdateMovieDto, Object]),
+    __metadata("design:returntype", void 0)
+], MoviesController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, swagger_1.ApiOperation)({ summary: 'Menghapus film (Khusus Admin)' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], MoviesController.prototype, "remove", null);
 exports.MoviesController = MoviesController = __decorate([
     (0, swagger_1.ApiTags)('Movies'),
     (0, common_1.Controller)('movies'),

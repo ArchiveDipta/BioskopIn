@@ -1,4 +1,10 @@
 import { z } from 'zod';
+export declare const ShowtimeSchema: z.ZodObject<{
+    movieId: z.ZodString;
+    studioId: z.ZodString;
+    startTime: z.ZodString;
+    price: z.ZodNumber;
+}, z.core.$strip>;
 declare const CreateShowtimeDto_base: import("nestjs-zod").ZodDto<z.ZodObject<{
     movieId: z.ZodString;
     studioId: z.ZodString;

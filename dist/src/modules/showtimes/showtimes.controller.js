@@ -16,6 +16,7 @@ exports.ShowtimesController = void 0;
 const common_1 = require("@nestjs/common");
 const showtimes_service_1 = require("./showtimes.service");
 const create_showtime_dto_1 = require("./dto/create-showtime.dto");
+const update_showtime_dto_1 = require("./dto/update-showtime.dto");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../common/guards/jwt-auth.guard");
 const roles_guard_1 = require("../../common/guards/roles.guard");
@@ -30,6 +31,12 @@ let ShowtimesController = class ShowtimesController {
     }
     getSeats(id) {
         return this.showtimesService.getSeatsAvailability(id);
+    }
+    update(id, updateShowtimeDto) {
+        return this.showtimesService.update(id, updateShowtimeDto);
+    }
+    remove(id) {
+        return this.showtimesService.remove(id);
     }
 };
 exports.ShowtimesController = ShowtimesController;
@@ -52,6 +59,29 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], ShowtimesController.prototype, "getSeats", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, swagger_1.ApiOperation)({ summary: 'Mengubah jadwal tayang (Khusus Admin)' }),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_showtime_dto_1.UpdateShowtimeDto]),
+    __metadata("design:returntype", void 0)
+], ShowtimesController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, swagger_1.ApiOperation)({ summary: 'Menghapus jadwal tayang (Khusus Admin)' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ShowtimesController.prototype, "remove", null);
 exports.ShowtimesController = ShowtimesController = __decorate([
     (0, swagger_1.ApiTags)('Showtimes'),
     (0, common_1.Controller)('showtimes'),

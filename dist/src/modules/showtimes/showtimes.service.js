@@ -47,6 +47,21 @@ let ShowtimesService = class ShowtimesService {
         }));
         return seatsWithAvailability;
     }
+    async update(id, updateShowtimeDto) {
+        const data = { ...updateShowtimeDto };
+        if (data.startTime) {
+            data.startTime = new Date(data.startTime);
+        }
+        return this.prisma.showtime.update({
+            where: { id },
+            data,
+        });
+    }
+    async remove(id) {
+        return this.prisma.showtime.delete({
+            where: { id },
+        });
+    }
 };
 exports.ShowtimesService = ShowtimesService;
 exports.ShowtimesService = ShowtimesService = __decorate([

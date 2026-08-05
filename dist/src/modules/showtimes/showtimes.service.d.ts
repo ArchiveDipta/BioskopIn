@@ -17,4 +17,18 @@ export declare class ShowtimesService {
         studioId: string;
         row: string;
     }[]>;
+    update(id: string, updateShowtimeDto: any): Promise<{
+        id: string;
+        startTime: Date;
+        movieId: string;
+        studioId: string;
+        price: number;
+    }>;
+    remove(id: string): Promise<{
+        id: string;
+        startTime: Date;
+        movieId: string;
+        studioId: string;
+        price: number;
+    }>;
 }

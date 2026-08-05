@@ -12,14 +12,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MoviesService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../prisma/prisma.service");
+const storage_service_1 = require("../storage/storage.service");
 let MoviesService = class MoviesService {
     prisma;
-    constructor(prisma) {
+    storageService;
+    constructor(prisma, storageService) {
         this.prisma = prisma;
+        this.storageService = storageService;
     }
-    async create(createMovieDto) {
+    async create(createMovieDto, file) {
+        let posterUrl = createMovieDto.posterUrl;
+        if (file) {
+            const filename = `poster-${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+            posterUrl = await this.storageService.uploadFile('movie-posters', filename, file.buffer, file.mimetype);
+        }
         return this.prisma.movie.create({
-            data: createMovieDto,
+            data: {
+                ...createMovieDto,
+                posterUrl,
+            },
         });
     }
     async findAllActive() {
@@ -38,10 +49,31 @@ let MoviesService = class MoviesService {
             },
         });
     }
+    async update(id, updateMovieDto, file) {
+        let posterUrl = updateMovieDto.posterUrl;
+        if (file) {
+            const filename = `poster-${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+            posterUrl = await this.storageService.uploadFile('movie-posters', filename, file.buffer, file.mimetype);
+        }
+        const data = { ...updateMovieDto };
+        if (posterUrl) {
+            data.posterUrl = posterUrl;
+        }
+        return this.prisma.movie.update({
+            where: { id },
+            data,
+        });
+    }
+    async remove(id) {
+        return this.prisma.movie.delete({
+            where: { id },
+        });
+    }
 };
 exports.MoviesService = MoviesService;
 exports.MoviesService = MoviesService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        storage_service_1.StorageService])
 ], MoviesService);
 //# sourceMappingURL=movies.service.js.map
