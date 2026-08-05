@@ -42,6 +42,7 @@ model Session {
 
 enum Role {
   USER
+  CUSTOMER
   ADMIN
 }
 
