@@ -18,10 +18,18 @@ const passport_1 = require("@nestjs/passport");
 const auth_service_1 = require("./auth.service");
 const swagger_1 = require("@nestjs/swagger");
 const verify_google_dto_1 = require("./dto/verify-google.dto");
+const register_dto_1 = require("./dto/register.dto");
+const login_dto_1 = require("./dto/login.dto");
 let AuthController = class AuthController {
     authService;
     constructor(authService) {
         this.authService = authService;
+    }
+    async register(registerDto) {
+        return this.authService.register(registerDto);
+    }
+    async login(loginDto) {
+        return this.authService.login(loginDto);
     }
     async verifyAndroidToken(verifyGoogleDto) {
         return this.authService.verifyAndroidToken(verifyGoogleDto.idToken);
@@ -37,6 +45,22 @@ let AuthController = class AuthController {
     }
 };
 exports.AuthController = AuthController;
+__decorate([
+    (0, common_1.Post)('register'),
+    (0, swagger_1.ApiOperation)({ summary: 'Mendaftar menggunakan Email dan Password' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "register", null);
+__decorate([
+    (0, common_1.Post)('login'),
+    (0, swagger_1.ApiOperation)({ summary: 'Login menggunakan Email dan Password' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [login_dto_1.LoginDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "login", null);
 __decorate([
     (0, common_1.Post)('google/android'),
     (0, swagger_1.ApiOperation)({ summary: 'Endpoint khusus aplikasi Native Android untuk mengirimkan Google ID Token' }),
