@@ -22,6 +22,8 @@ export declare class OrdersController {
                     duration: number;
                     posterUrl: string | null;
                     trailerUrl: string | null;
+                    category: string | null;
+                    ageRating: string | null;
                 };
             } & {
                 id: string;
@@ -60,6 +62,8 @@ export declare class OrdersController {
                     duration: number;
                     posterUrl: string | null;
                     trailerUrl: string | null;
+                    category: string | null;
+                    ageRating: string | null;
                 };
             } & {
                 id: string;
@@ -104,10 +108,13 @@ export declare class OrdersController {
                     duration: number;
                     posterUrl: string | null;
                     trailerUrl: string | null;
+                    category: string | null;
+                    ageRating: string | null;
                 };
                 studio: {
                     id: string;
                     name: string;
+                    cinemaId: string;
                     totalCapacity: number;
                 };
             } & {

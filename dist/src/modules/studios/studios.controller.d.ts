@@ -6,15 +6,17 @@ export declare class StudiosController {
     create(createStudioDto: CreateStudioDto): Promise<{
         id: string;
         name: string;
+        cinemaId: string;
         totalCapacity: number;
     }>;
-    findAll(): Promise<({
+    findAll(cinemaId?: string): Promise<({
         _count: {
             seats: number;
         };
     } & {
         id: string;
         name: string;
+        cinemaId: string;
         totalCapacity: number;
     })[]>;
     findOne(id: string): Promise<{
@@ -27,11 +29,13 @@ export declare class StudiosController {
     } & {
         id: string;
         name: string;
+        cinemaId: string;
         totalCapacity: number;
     }>;
     remove(id: string): Promise<{
         id: string;
         name: string;
+        cinemaId: string;
         totalCapacity: number;
     }>;
 }

@@ -5,6 +5,8 @@ export declare const MovieSchema: z.ZodObject<{
     duration: z.ZodCoercedNumber<unknown>;
     posterUrl: z.ZodUnion<[z.ZodOptional<z.ZodString>, z.ZodLiteral<"">]>;
     trailerUrl: z.ZodUnion<[z.ZodOptional<z.ZodString>, z.ZodLiteral<"">]>;
+    category: z.ZodOptional<z.ZodString>;
+    ageRating: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
 declare const CreateMovieDto_base: import("nestjs-zod").ZodDto<z.ZodObject<{
     title: z.ZodString;
@@ -12,6 +14,8 @@ declare const CreateMovieDto_base: import("nestjs-zod").ZodDto<z.ZodObject<{
     duration: z.ZodCoercedNumber<unknown>;
     posterUrl: z.ZodUnion<[z.ZodOptional<z.ZodString>, z.ZodLiteral<"">]>;
     trailerUrl: z.ZodUnion<[z.ZodOptional<z.ZodString>, z.ZodLiteral<"">]>;
+    category: z.ZodOptional<z.ZodString>;
+    ageRating: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>, false>;
 export declare class CreateMovieDto extends CreateMovieDto_base {
 }

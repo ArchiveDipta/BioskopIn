@@ -9,6 +9,8 @@ exports.MovieSchema = zod_1.z.object({
     duration: zod_1.z.coerce.number().int().positive('Durasi harus angka positif'),
     posterUrl: zod_1.z.string().url().optional().or(zod_1.z.literal('')),
     trailerUrl: zod_1.z.string().url('URL Trailer tidak valid').optional().or(zod_1.z.literal('')),
+    category: zod_1.z.string().optional(),
+    ageRating: zod_1.z.string().optional(),
 });
 class CreateMovieDto extends (0, nestjs_zod_1.createZodDto)(exports.MovieSchema) {
 }

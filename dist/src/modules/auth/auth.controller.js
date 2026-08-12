@@ -37,10 +37,9 @@ let AuthController = class AuthController {
     async googleAuth(req) {
     }
     async googleAuthRedirect(req, res) {
-        const jwt = await this.authService.validateOAuthLogin(req.user);
         return res.json({
             message: 'Login Berhasil',
-            ...jwt,
+            ...req.user,
         });
     }
 };

@@ -12,6 +12,8 @@ export declare class MoviesService {
         duration: number;
         posterUrl: string | null;
         trailerUrl: string | null;
+        category: string | null;
+        ageRating: string | null;
     }>;
     findAllActive(): Promise<({
         showtimes: {
@@ -28,6 +30,8 @@ export declare class MoviesService {
         duration: number;
         posterUrl: string | null;
         trailerUrl: string | null;
+        category: string | null;
+        ageRating: string | null;
     })[]>;
     update(id: string, updateMovieDto: any, file?: Express.Multer.File): Promise<{
         id: string;
@@ -36,6 +40,8 @@ export declare class MoviesService {
         duration: number;
         posterUrl: string | null;
         trailerUrl: string | null;
+        category: string | null;
+        ageRating: string | null;
     }>;
     remove(id: string): Promise<{
         id: string;
@@ -44,5 +50,7 @@ export declare class MoviesService {
         duration: number;
         posterUrl: string | null;
         trailerUrl: string | null;
+        category: string | null;
+        ageRating: string | null;
     }>;
 }

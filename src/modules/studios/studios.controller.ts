@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { StudiosService } from './studios.service';
 import { CreateStudioDto } from './dto/create-studio.dto';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -22,8 +22,9 @@ export class StudiosController {
 
   @Get()
   @ApiOperation({ summary: 'Melihat semua studio' })
-  findAll() {
-    return this.studiosService.findAll();
+  @ApiQuery({ name: 'cinemaId', required: false, description: 'Filter berdasarkan ID Bioskop' })
+  findAll(@Query('cinemaId') cinemaId?: string) {
+    return this.studiosService.findAll(cinemaId);
   }
 
   @Get(':id')

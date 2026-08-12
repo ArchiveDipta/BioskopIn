@@ -78,13 +78,26 @@ model Movie {
   duration    Int        // in minutes
   posterUrl   String?
   trailerUrl  String?
+  category    String?    // e.g., Action, Drama, Slice of Life
+  ageRating   String?    // e.g., SU, R13+, R18+
   showtimes   Showtime[]
+}
+
+model Cinema {
+  id          String     @id @default(cuid())
+  name        String
+  city        String
+  address     String?
+  studios     Studio[]
 }
 
 model Studio {
   id            String     @id @default(cuid())
+  cinemaId      String
   name          String
   totalCapacity Int
+  
+  cinema        Cinema     @relation(fields: [cinemaId], references: [id], onDelete: Cascade)
   seats         Seat[]
   showtimes     Showtime[]
 }

@@ -11,6 +11,8 @@ export declare class MoviesController {
         duration: number;
         posterUrl: string | null;
         trailerUrl: string | null;
+        category: string | null;
+        ageRating: string | null;
     }>;
     findAll(): Promise<({
         showtimes: {
@@ -27,6 +29,8 @@ export declare class MoviesController {
         duration: number;
         posterUrl: string | null;
         trailerUrl: string | null;
+        category: string | null;
+        ageRating: string | null;
     })[]>;
     update(id: string, updateMovieDto: UpdateMovieDto, file?: Express.Multer.File): Promise<{
         id: string;
@@ -35,6 +39,8 @@ export declare class MoviesController {
         duration: number;
         posterUrl: string | null;
         trailerUrl: string | null;
+        category: string | null;
+        ageRating: string | null;
     }>;
     remove(id: string): Promise<{
         id: string;
@@ -43,5 +49,7 @@ export declare class MoviesController {
         duration: number;
         posterUrl: string | null;
         trailerUrl: string | null;
+        category: string | null;
+        ageRating: string | null;
     }>;
 }

@@ -7,6 +7,8 @@ export const MovieSchema = z.object({
   duration: z.coerce.number().int().positive('Durasi harus angka positif'),
   posterUrl: z.string().url().optional().or(z.literal('')),
   trailerUrl: z.string().url('URL Trailer tidak valid').optional().or(z.literal('')),
+  category: z.string().optional(),
+  ageRating: z.string().optional(),
 });
 
 export class CreateMovieDto extends createZodDto(MovieSchema) {}

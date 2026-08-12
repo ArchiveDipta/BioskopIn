@@ -9,9 +9,10 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { StudiosModule } from './modules/studios/studios.module';
+import { CinemasModule } from './modules/cinemas/cinemas.module';
 
 @Module({
-  imports: [PrismaModule, MoviesModule, ShowtimesModule, OrdersModule, AnalyticsModule, StorageModule, AuthModule, StudiosModule],
+  imports: [PrismaModule, MoviesModule, ShowtimesModule, OrdersModule, AnalyticsModule, StorageModule, AuthModule, StudiosModule, CinemasModule],
   controllers: [AppController],
   providers: [AppService],
 })

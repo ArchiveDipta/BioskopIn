@@ -18,11 +18,12 @@ let StudiosService = class StudiosService {
         this.prisma = prisma;
     }
     async create(createStudioDto) {
-        const { name, rows, seatsPerRow } = createStudioDto;
+        const { cinemaId, name, rows, seatsPerRow } = createStudioDto;
         const totalCapacity = rows * seatsPerRow;
         return this.prisma.$transaction(async (tx) => {
             const studio = await tx.studio.create({
                 data: {
+                    cinemaId,
                     name,
                     totalCapacity,
                 },
@@ -45,8 +46,9 @@ let StudiosService = class StudiosService {
             return studio;
         });
     }
-    async findAll() {
+    async findAll(cinemaId) {
         return this.prisma.studio.findMany({
+            where: cinemaId ? { cinemaId } : undefined,
             include: {
                 _count: {
                     select: { seats: true },

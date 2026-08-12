@@ -4,6 +4,7 @@ const baseUrl = 'http://127.0.0.1:3000';
 let adminToken = '';
 let userToken = '';
 let movieId = '';
+let cinemaId = '';
 let studioId = '';
 let showtimeId = '';
 let orderId = '';
@@ -69,7 +70,9 @@ async function runTests() {
     const moviePayload = {
       title: 'Movie Testing Complete',
       description: 'A good movie for testing',
-      duration: 120
+      duration: 120,
+      category: 'Action',
+      ageRating: 'R13+'
     };
 
     const moviePost = await fetch(`${baseUrl}/movies`, {
@@ -104,27 +107,29 @@ async function runTests() {
     assert(moviePatch.status === 200, 'Update Movie', 200, moviePatch.status);
 
 
+    console.log('\n=== TESTING CINEMAS CRUD ===');
+    const cinemaPost = await fetch(`${baseUrl}/cinemas`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${adminToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Cinema Test', city: 'Jakarta', address: 'Jl. Test No. 1' })
+    });
+    assert(cinemaPost.status === 201, 'Create Cinema', 201, cinemaPost.status);
+    const createdCinema = await cinemaPost.json();
+    cinemaId = createdCinema.id;
+
+
     console.log('\n=== TESTING STUDIOS CRUD ===');
     // POST Studio
     const studioPost = await fetch(`${baseUrl}/studios`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${adminToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: 'Studio Test Complete', rows: 5, seatsPerRow: 6 })
+      body: JSON.stringify({ cinemaId: cinemaId, name: 'Studio Test Complete', rows: 5, seatsPerRow: 6 })
     });
     const studioPostText = await studioPost.text();
-    // Menyesuaikan kalau ada controller studios. Kalau belum ada, minimal test apa yang ada.
-    if (studioPost.status === 404) {
-      console.log('⚠️ Studio endpoints might not exist yet, skipping studio tests');
-      // kita query studio pertama di DB
-      const studio = await prisma.studio.findFirst();
-      if (!studio) throw new Error("No studio found in DB to test showtimes");
-      studioId = studio.id;
-    } else {
-      console.log('studioPost.status:', studioPost.status, studioPostText);
-      assert(studioPost.status === 201, 'Create Studio', 201, studioPost.status);
-      const createdStudio = JSON.parse(studioPostText);
-      studioId = createdStudio.id;
-    }
+    console.log('studioPost.status:', studioPost.status, studioPostText);
+    assert(studioPost.status === 201, 'Create Studio', 201, studioPost.status);
+    const createdStudio = JSON.parse(studioPostText);
+    studioId = createdStudio.id;
 
 
     console.log('\n=== TESTING SHOWTIMES CRUD ===');
@@ -197,6 +202,18 @@ async function runTests() {
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
     assert(showtimeDelete.status === 200, 'Delete Showtime', 200, showtimeDelete.status);
+
+    const studioDelete = await fetch(`${baseUrl}/studios/${studioId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    assert(studioDelete.status === 200, 'Delete Studio', 200, studioDelete.status);
+
+    const cinemaDelete = await fetch(`${baseUrl}/cinemas/${cinemaId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    assert(cinemaDelete.status === 200, 'Delete Cinema', 200, cinemaDelete.status);
 
     const movieDelete = await fetch(`${baseUrl}/movies/${movieId}`, {
       method: 'DELETE',
