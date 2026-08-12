@@ -7,13 +7,13 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
 @ApiTags('Studios')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('studios')
 export class StudiosController {
   constructor(private readonly studiosService: StudiosService) {}
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Membuat studio baru & kursi otomatis (Khusus Admin)' })
   create(@Body() createStudioDto: CreateStudioDto) {
@@ -21,20 +21,20 @@ export class StudiosController {
   }
 
   @Get()
-  @Roles('ADMIN')
-  @ApiOperation({ summary: 'Melihat semua studio (Khusus Admin)' })
+  @ApiOperation({ summary: 'Melihat semua studio' })
   findAll() {
     return this.studiosService.findAll();
   }
 
   @Get(':id')
-  @Roles('ADMIN')
-  @ApiOperation({ summary: 'Melihat detail studio dan kursinya (Khusus Admin)' })
+  @ApiOperation({ summary: 'Melihat detail studio dan kursinya' })
   findOne(@Param('id') id: string) {
     return this.studiosService.findOne(id);
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Menghapus studio beserta kursinya (Khusus Admin)' })
   remove(@Param('id') id: string) {
