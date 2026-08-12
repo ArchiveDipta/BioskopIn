@@ -64,7 +64,16 @@ let OrdersService = class OrdersService {
         return this.prisma.order.findMany({
             include: {
                 user: { select: { id: true, name: true, email: true } },
-                tickets: { include: { showtime: { include: { movie: true } } } },
+                tickets: {
+                    include: {
+                        showtime: {
+                            include: {
+                                movie: true,
+                                studio: { include: { cinema: true } }
+                            }
+                        }
+                    }
+                },
             },
             orderBy: { createdAt: 'desc' },
         });
@@ -73,7 +82,16 @@ let OrdersService = class OrdersService {
         return this.prisma.order.findMany({
             where: { userId },
             include: {
-                tickets: { include: { showtime: { include: { movie: true } } } },
+                tickets: {
+                    include: {
+                        showtime: {
+                            include: {
+                                movie: true,
+                                studio: { include: { cinema: true } }
+                            }
+                        }
+                    }
+                },
             },
             orderBy: { createdAt: 'desc' },
         });
@@ -87,7 +105,10 @@ let OrdersService = class OrdersService {
                     include: {
                         seat: true,
                         showtime: {
-                            include: { movie: true, studio: true },
+                            include: {
+                                movie: true,
+                                studio: { include: { cinema: true } }
+                            },
                         },
                     },
                 },

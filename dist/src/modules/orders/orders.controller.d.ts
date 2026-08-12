@@ -6,8 +6,8 @@ export declare class OrdersController {
     constructor(ordersService: OrdersService);
     checkout(checkoutDto: CheckoutDto, req: any): Promise<{
         id: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
         totalPrice: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         bookingCode: string;
         createdAt: Date;
         userId: string;
@@ -25,24 +25,37 @@ export declare class OrdersController {
                     category: string | null;
                     ageRating: string | null;
                 };
+                studio: {
+                    cinema: {
+                        id: string;
+                        name: string;
+                        city: string;
+                        address: string | null;
+                    };
+                } & {
+                    id: string;
+                    name: string;
+                    cinemaId: string;
+                    totalCapacity: number;
+                };
             } & {
                 id: string;
-                startTime: Date;
                 movieId: string;
                 studioId: string;
+                startTime: Date;
                 price: number;
             };
         } & {
             id: string;
             price: number;
-            orderId: string;
             showtimeId: string;
+            orderId: string;
             seatId: string;
         })[];
     } & {
         id: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
         totalPrice: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         bookingCode: string;
         createdAt: Date;
         userId: string;
@@ -65,24 +78,37 @@ export declare class OrdersController {
                     category: string | null;
                     ageRating: string | null;
                 };
+                studio: {
+                    cinema: {
+                        id: string;
+                        name: string;
+                        city: string;
+                        address: string | null;
+                    };
+                } & {
+                    id: string;
+                    name: string;
+                    cinemaId: string;
+                    totalCapacity: number;
+                };
             } & {
                 id: string;
-                startTime: Date;
                 movieId: string;
                 studioId: string;
+                startTime: Date;
                 price: number;
             };
         } & {
             id: string;
             price: number;
-            orderId: string;
             showtimeId: string;
+            orderId: string;
             seatId: string;
         })[];
     } & {
         id: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
         totalPrice: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         bookingCode: string;
         createdAt: Date;
         userId: string;
@@ -112,6 +138,13 @@ export declare class OrdersController {
                     ageRating: string | null;
                 };
                 studio: {
+                    cinema: {
+                        id: string;
+                        name: string;
+                        city: string;
+                        address: string | null;
+                    };
+                } & {
                     id: string;
                     name: string;
                     cinemaId: string;
@@ -119,38 +152,38 @@ export declare class OrdersController {
                 };
             } & {
                 id: string;
-                startTime: Date;
                 movieId: string;
                 studioId: string;
+                startTime: Date;
                 price: number;
             };
         } & {
             id: string;
             price: number;
-            orderId: string;
             showtimeId: string;
+            orderId: string;
             seatId: string;
         })[];
     } & {
         id: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
         totalPrice: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         bookingCode: string;
         createdAt: Date;
         userId: string;
     }>;
     updateStatus(id: string, updateDto: UpdateOrderStatusDto): Promise<{
         id: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
         totalPrice: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         bookingCode: string;
         createdAt: Date;
         userId: string;
     }>;
     remove(id: string): Promise<{
         id: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
         totalPrice: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         bookingCode: string;
         createdAt: Date;
         userId: string;
