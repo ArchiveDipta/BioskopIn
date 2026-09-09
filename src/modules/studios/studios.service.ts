@@ -19,7 +19,7 @@ export class StudiosService {
         },
       });
 
-      const seatsData: { studioId: string; row: string; number: number; }[] = [];
+      const seatsData: { studioId: number; row: string; number: number; }[] = [];
       const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
       for (let i = 0; i < rows; i++) {
@@ -41,7 +41,7 @@ export class StudiosService {
     });
   }
 
-  async findAll(cinemaId?: string) {
+  async findAll(cinemaId?: number) {
     return this.prisma.studio.findMany({
       where: cinemaId ? { cinemaId } : undefined,
       include: {
@@ -52,7 +52,7 @@ export class StudiosService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     const studio = await this.prisma.studio.findUnique({
       where: { id },
       include: { seats: true },
@@ -62,7 +62,7 @@ export class StudiosService {
     return studio;
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     return this.prisma.$transaction(async (tx) => {
       await tx.seat.deleteMany({ where: { studioId: id } });
       return tx.studio.delete({ where: { id } });

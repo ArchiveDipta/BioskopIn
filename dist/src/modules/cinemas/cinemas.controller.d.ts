@@ -4,41 +4,41 @@ export declare class CinemasController {
     private readonly cinemasService;
     constructor(cinemasService: CinemasService);
     create(createCinemaDto: CreateCinemaDto): Promise<{
+        id: number;
         name: string;
         city: string;
         address: string | null;
-        id: string;
     }>;
     findAll(city?: string): Promise<({
         studios: {
+            id: number;
             name: string;
-            id: string;
-            cinemaId: string;
+            cinemaId: number;
             totalCapacity: number;
         }[];
     } & {
+        id: number;
         name: string;
         city: string;
         address: string | null;
-        id: string;
     })[]>;
-    findOne(id: string): Promise<({
+    findOne(id: number): Promise<({
         studios: {
+            id: number;
             name: string;
-            id: string;
-            cinemaId: string;
+            cinemaId: number;
             totalCapacity: number;
         }[];
     } & {
+        id: number;
         name: string;
         city: string;
         address: string | null;
-        id: string;
     }) | null>;
-    remove(id: string): Promise<{
+    remove(id: number): Promise<{
+        id: number;
         name: string;
         city: string;
         address: string | null;
-        id: string;
     }>;
 }

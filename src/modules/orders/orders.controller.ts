@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Req, Param, Patch, Delete, UseGuards } from '@nestjs/common';
+import {  Controller, Get, Post, Body, Req, Param, Patch, Delete, UseGuards , ParseIntPipe } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CheckoutDto } from './dto/checkout-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
@@ -36,21 +36,21 @@ export class OrdersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Mengambil detail satu pesanan (Hanya pemilik atau Admin)' })
-  findOne(@Param('id') id: string, @Req() req: any) {
+  findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     return this.ordersService.findOne(id, req.user);
   }
 
   @Patch(':id/status')
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Memperbarui status pesanan (Khusus Admin)' })
-  updateStatus(@Param('id') id: string, @Body() updateDto: UpdateOrderStatusDto) {
+  updateStatus(@Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateOrderStatusDto) {
     return this.ordersService.updateStatus(id, updateDto);
   }
 
   @Delete(':id')
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Menghapus pesanan secara permanen (Khusus Admin)' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.ordersService.remove(id);
   }
 }

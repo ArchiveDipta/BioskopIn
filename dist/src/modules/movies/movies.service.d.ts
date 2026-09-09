@@ -6,7 +6,6 @@ export declare class MoviesService {
     private readonly storageService;
     constructor(prisma: PrismaService, storageService: StorageService);
     create(createMovieDto: CreateMovieDto, file?: Express.Multer.File): Promise<{
-        id: string;
         title: string;
         description: string | null;
         duration: number;
@@ -14,17 +13,17 @@ export declare class MoviesService {
         trailerUrl: string | null;
         category: string | null;
         ageRating: string | null;
+        id: number;
     }>;
     findAllActive(): Promise<({
         showtimes: {
-            id: string;
+            id: number;
             startTime: Date;
-            movieId: string;
-            studioId: string;
+            movieId: number;
+            studioId: number;
             price: number;
         }[];
     } & {
-        id: string;
         title: string;
         description: string | null;
         duration: number;
@@ -32,9 +31,9 @@ export declare class MoviesService {
         trailerUrl: string | null;
         category: string | null;
         ageRating: string | null;
+        id: number;
     })[]>;
-    update(id: string, updateMovieDto: any, file?: Express.Multer.File): Promise<{
-        id: string;
+    update(id: number, updateMovieDto: any, file?: Express.Multer.File): Promise<{
         title: string;
         description: string | null;
         duration: number;
@@ -42,9 +41,9 @@ export declare class MoviesService {
         trailerUrl: string | null;
         category: string | null;
         ageRating: string | null;
+        id: number;
     }>;
-    remove(id: string): Promise<{
-        id: string;
+    remove(id: number): Promise<{
         title: string;
         description: string | null;
         duration: number;
@@ -52,5 +51,6 @@ export declare class MoviesService {
         trailerUrl: string | null;
         category: string | null;
         ageRating: string | null;
+        id: number;
     }>;
 }

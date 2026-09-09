@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import {  Controller, Get, Post, Body, Param, Delete, UseGuards, Query , ParseIntPipe } from '@nestjs/common';
 import { StudiosService } from './studios.service';
 import { CreateStudioDto } from './dto/create-studio.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
@@ -23,13 +23,13 @@ export class StudiosController {
   @Get()
   @ApiOperation({ summary: 'Melihat semua studio' })
   @ApiQuery({ name: 'cinemaId', required: false, description: 'Filter berdasarkan ID Bioskop' })
-  findAll(@Query('cinemaId') cinemaId?: string) {
+  findAll(@Query('cinemaId') cinemaId?: number) {
     return this.studiosService.findAll(cinemaId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Melihat detail studio dan kursinya' })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.studiosService.findOne(id);
   }
 
@@ -38,7 +38,7 @@ export class StudiosController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Menghapus studio beserta kursinya (Khusus Admin)' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.studiosService.remove(id);
   }
 }

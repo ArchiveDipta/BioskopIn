@@ -4,31 +4,31 @@ export declare class ShowtimesService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     create(createShowtimeDto: CreateShowtimeDto): Promise<{
-        id: string;
+        id: number;
         startTime: Date;
-        movieId: string;
-        studioId: string;
+        movieId: number;
+        studioId: number;
         price: number;
     }>;
-    getSeatsAvailability(showtimeId: string): Promise<{
+    getSeatsAvailability(showtimeId: number): Promise<{
         isAvailable: boolean;
         number: number;
-        id: string;
-        studioId: string;
+        id: number;
+        studioId: number;
         row: string;
     }[]>;
-    update(id: string, updateShowtimeDto: any): Promise<{
-        id: string;
+    update(id: number, updateShowtimeDto: any): Promise<{
+        id: number;
         startTime: Date;
-        movieId: string;
-        studioId: string;
+        movieId: number;
+        studioId: number;
         price: number;
     }>;
-    remove(id: string): Promise<{
-        id: string;
+    remove(id: number): Promise<{
+        id: number;
         startTime: Date;
-        movieId: string;
-        studioId: string;
+        movieId: number;
+        studioId: number;
         price: number;
     }>;
 }

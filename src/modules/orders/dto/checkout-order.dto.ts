@@ -2,9 +2,9 @@ import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 const CheckoutSchema = z.object({
-  showtimeId: z.string().min(1, 'Jadwal tidak valid'),
+  showtimeId: z.coerce.number().int(),
   seatIds: z
-    .array(z.string())
+    .array(z.coerce.number().int())
     .min(1, 'Pilih minimal 1 kursi')
     .refine((items) => new Set(items).size === items.length, {
       message: 'Terdapat duplikasi kursi',

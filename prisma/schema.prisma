@@ -14,8 +14,8 @@ datasource db {
 // NEXTAUTH MODELS
 // ==============================
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
+  id Int @id @default(autoincrement())
+  userId Int
   type               String
   provider           String
   providerAccountId  String
@@ -33,9 +33,9 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id Int @id @default(autoincrement())
   sessionToken String   @unique
-  userId       String
+  userId Int
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -47,7 +47,7 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id Int @id @default(autoincrement())
   name          String?
   email         String?   @unique
   emailVerified DateTime?
@@ -72,7 +72,7 @@ model VerificationToken {
 // BIOSKOP MODELS (PRD)
 // ==============================
 model Movie {
-  id          String     @id @default(cuid())
+  id Int @id @default(autoincrement())
   title       String
   description String?    @db.Text
   duration    Int        // in minutes
@@ -84,7 +84,7 @@ model Movie {
 }
 
 model Cinema {
-  id          String     @id @default(cuid())
+  id Int @id @default(autoincrement())
   name        String
   city        String
   address     String?
@@ -92,8 +92,8 @@ model Cinema {
 }
 
 model Studio {
-  id            String     @id @default(cuid())
-  cinemaId      String
+  id            Int     @id @default(autoincrement())
+  cinemaId Int
   name          String
   totalCapacity Int
   
@@ -103,8 +103,8 @@ model Studio {
 }
 
 model Seat {
-  id        String        @id @default(cuid())
-  studioId  String
+  id Int @id @default(autoincrement())
+  studioId Int
   row       String        // e.g. 'A', 'B'
   number    Int           // e.g. 1, 2
   
@@ -116,9 +116,9 @@ model Seat {
 }
 
 model Showtime {
-  id        String        @id @default(cuid())
-  movieId   String
-  studioId  String
+  id Int @id @default(autoincrement())
+  movieId Int
+  studioId Int
   startTime DateTime
   price     Float
   
@@ -135,8 +135,8 @@ enum OrderStatus {
 }
 
 model Order {
-  id          String        @id @default(cuid())
-  userId      String
+  id Int @id @default(autoincrement())
+  userId Int
   totalPrice  Float
   status      OrderStatus   @default(PENDING)
   bookingCode String        @unique // 8 characters random string
@@ -147,10 +147,10 @@ model Order {
 }
 
 model OrderTicket {
-  id         String   @id @default(cuid())
-  orderId    String
-  showtimeId String
-  seatId     String
+  id Int @id @default(autoincrement())
+  orderId Int
+  showtimeId Int
+  seatId Int
   price      Float
   
   order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)

@@ -9,7 +9,7 @@ export declare class AuthController {
         message: string;
         access_token: string;
         user: {
-            id: string;
+            id: number;
             name: string | null;
             email: string | null;
             emailVerified: Date | null;
@@ -22,7 +22,7 @@ export declare class AuthController {
         message: string;
         access_token: string;
         user: {
-            id: string;
+            id: number;
             name: string | null;
             email: string | null;
             emailVerified: Date | null;
@@ -34,7 +34,7 @@ export declare class AuthController {
     verifyAndroidToken(verifyGoogleDto: VerifyGoogleDto): Promise<{
         access_token: string;
         user: {
-            id: string;
+            id: number;
             name: string | null;
             email: string | null;
             emailVerified: Date | null;

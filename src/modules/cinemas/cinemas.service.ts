@@ -21,7 +21,7 @@ export class CinemasService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     return this.prisma.cinema.findUnique({
       where: { id },
       include: {
@@ -30,7 +30,7 @@ export class CinemasService {
     });
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     return this.prisma.cinema.delete({
       where: { id },
     });

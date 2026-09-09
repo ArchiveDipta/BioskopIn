@@ -11,7 +11,7 @@ export class OrdersService {
     return Math.random().toString(36).substring(2, 10).toUpperCase();
   }
 
-  async checkout(userId: string, checkoutDto: CheckoutDto) {
+  async checkout(userId: number, checkoutDto: CheckoutDto) {
     const { showtimeId, seatIds } = checkoutDto;
 
     try {
@@ -78,7 +78,7 @@ export class OrdersService {
     });
   }
 
-  async findMyOrders(userId: string) {
+  async findMyOrders(userId: number) {
     return this.prisma.order.findMany({
       where: { userId },
       include: {
@@ -97,7 +97,7 @@ export class OrdersService {
     });
   }
 
-  async findOne(id: string, user: any) {
+  async findOne(id: number, user: any) {
     const order = await this.prisma.order.findUnique({
       where: { id },
       include: {
@@ -128,7 +128,7 @@ export class OrdersService {
     return order;
   }
 
-  async updateStatus(id: string, updateDto: UpdateOrderStatusDto) {
+  async updateStatus(id: number, updateDto: UpdateOrderStatusDto) {
     const order = await this.prisma.order.findUnique({ where: { id } });
     if (!order) throw new NotFoundException('Pesanan tidak ditemukan');
 
@@ -138,7 +138,7 @@ export class OrdersService {
     });
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     const order = await this.prisma.order.findUnique({ where: { id } });
     if (!order) throw new NotFoundException('Pesanan tidak ditemukan');
 

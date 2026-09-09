@@ -15,7 +15,7 @@ export class ShowtimesService {
     });
   }
 
-  async getSeatsAvailability(showtimeId: string) {
+  async getSeatsAvailability(showtimeId: number) {
     const showtime = await this.prisma.showtime.findUnique({
       where: { id: showtimeId },
       include: {
@@ -42,7 +42,7 @@ export class ShowtimesService {
     return seatsWithAvailability;
   }
 
-  async update(id: string, updateShowtimeDto: any) {
+  async update(id: number, updateShowtimeDto: any) {
     const data: any = { ...updateShowtimeDto };
     if (data.startTime) {
       data.startTime = new Date(data.startTime);
@@ -53,7 +53,7 @@ export class ShowtimesService {
     });
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     return this.prisma.showtime.delete({
       where: { id },
     });

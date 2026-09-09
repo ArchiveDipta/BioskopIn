@@ -70,11 +70,11 @@ __decorate([
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('poster')),
     (0, swagger_1.ApiConsumes)('multipart/form-data', 'application/json'),
     (0, swagger_1.ApiOperation)({ summary: 'Mengubah data film & update poster (Khusus Admin)' }),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_movie_dto_1.UpdateMovieDto, Object]),
+    __metadata("design:paramtypes", [Number, update_movie_dto_1.UpdateMovieDto, Object]),
     __metadata("design:returntype", void 0)
 ], MoviesController.prototype, "update", null);
 __decorate([
@@ -83,9 +83,9 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),
     (0, swagger_1.ApiOperation)({ summary: 'Menghapus film (Khusus Admin)' }),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], MoviesController.prototype, "remove", null);
 exports.MoviesController = MoviesController = __decorate([

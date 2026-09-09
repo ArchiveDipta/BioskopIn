@@ -43,7 +43,7 @@ export class MoviesService {
     });
   }
 
-  async update(id: string, updateMovieDto: any, file?: Express.Multer.File) {
+  async update(id: number, updateMovieDto: any, file?: Express.Multer.File) {
     let posterUrl = updateMovieDto.posterUrl;
 
     if (file) {
@@ -62,7 +62,7 @@ export class MoviesService {
     });
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     return this.prisma.movie.delete({
       where: { id },
     });

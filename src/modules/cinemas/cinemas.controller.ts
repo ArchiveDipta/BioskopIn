@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import {  Controller, Get, Post, Body, Param, Delete, Query, UseGuards , ParseIntPipe } from '@nestjs/common';
 import { CinemasService } from './cinemas.service';
 import { CreateCinemaDto } from './dto/create-cinema.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
@@ -29,7 +29,7 @@ export class CinemasController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Melihat detail bioskop beserta studio di dalamnya' })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.cinemasService.findOne(id);
   }
 
@@ -38,7 +38,7 @@ export class CinemasController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Menghapus bioskop (Khusus Admin)' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.cinemasService.remove(id);
   }
 }

@@ -5,31 +5,31 @@ export declare class ShowtimesController {
     private readonly showtimesService;
     constructor(showtimesService: ShowtimesService);
     create(createShowtimeDto: CreateShowtimeDto): Promise<{
-        id: string;
+        id: number;
         startTime: Date;
-        movieId: string;
-        studioId: string;
+        movieId: number;
+        studioId: number;
         price: number;
     }>;
-    getSeats(id: string): Promise<{
+    getSeats(id: number): Promise<{
         isAvailable: boolean;
         number: number;
-        id: string;
-        studioId: string;
+        id: number;
+        studioId: number;
         row: string;
     }[]>;
-    update(id: string, updateShowtimeDto: UpdateShowtimeDto): Promise<{
-        id: string;
+    update(id: number, updateShowtimeDto: UpdateShowtimeDto): Promise<{
+        id: number;
         startTime: Date;
-        movieId: string;
-        studioId: string;
+        movieId: number;
+        studioId: number;
         price: number;
     }>;
-    remove(id: string): Promise<{
-        id: string;
+    remove(id: number): Promise<{
+        id: number;
         startTime: Date;
-        movieId: string;
-        studioId: string;
+        movieId: number;
+        studioId: number;
         price: number;
     }>;
 }

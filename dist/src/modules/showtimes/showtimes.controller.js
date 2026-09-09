@@ -54,9 +54,9 @@ __decorate([
 __decorate([
     (0, common_1.Get)(':id/seats'),
     (0, swagger_1.ApiOperation)({ summary: 'Melihat ketersediaan kursi secara real-time (Publik)' }),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ShowtimesController.prototype, "getSeats", null);
 __decorate([
@@ -65,10 +65,10 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),
     (0, swagger_1.ApiOperation)({ summary: 'Mengubah jadwal tayang (Khusus Admin)' }),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_showtime_dto_1.UpdateShowtimeDto]),
+    __metadata("design:paramtypes", [Number, update_showtime_dto_1.UpdateShowtimeDto]),
     __metadata("design:returntype", void 0)
 ], ShowtimesController.prototype, "update", null);
 __decorate([
@@ -77,9 +77,9 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),
     (0, swagger_1.ApiOperation)({ summary: 'Menghapus jadwal tayang (Khusus Admin)' }),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ShowtimesController.prototype, "remove", null);
 exports.ShowtimesController = ShowtimesController = __decorate([

@@ -4,8 +4,8 @@ exports.CreateShowtimeDto = exports.ShowtimeSchema = void 0;
 const nestjs_zod_1 = require("nestjs-zod");
 const zod_1 = require("zod");
 exports.ShowtimeSchema = zod_1.z.object({
-    movieId: zod_1.z.string().min(1, 'Movie ID wajib diisi'),
-    studioId: zod_1.z.string().min(1, 'Studio ID wajib diisi'),
+    movieId: zod_1.z.coerce.number().int(),
+    studioId: zod_1.z.coerce.number().int(),
     startTime: zod_1.z.string().datetime('Format waktu salah (ISO-8601)'),
     price: zod_1.z.number().positive('Harga tiket harus positif'),
 });

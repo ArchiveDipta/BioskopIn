@@ -5,7 +5,6 @@ export declare class MoviesController {
     private readonly moviesService;
     constructor(moviesService: MoviesService);
     create(createMovieDto: CreateMovieDto, file?: Express.Multer.File): Promise<{
-        id: string;
         title: string;
         description: string | null;
         duration: number;
@@ -13,17 +12,17 @@ export declare class MoviesController {
         trailerUrl: string | null;
         category: string | null;
         ageRating: string | null;
+        id: number;
     }>;
     findAll(): Promise<({
         showtimes: {
-            id: string;
+            id: number;
             startTime: Date;
-            movieId: string;
-            studioId: string;
+            movieId: number;
+            studioId: number;
             price: number;
         }[];
     } & {
-        id: string;
         title: string;
         description: string | null;
         duration: number;
@@ -31,9 +30,9 @@ export declare class MoviesController {
         trailerUrl: string | null;
         category: string | null;
         ageRating: string | null;
+        id: number;
     })[]>;
-    update(id: string, updateMovieDto: UpdateMovieDto, file?: Express.Multer.File): Promise<{
-        id: string;
+    update(id: number, updateMovieDto: UpdateMovieDto, file?: Express.Multer.File): Promise<{
         title: string;
         description: string | null;
         duration: number;
@@ -41,9 +40,9 @@ export declare class MoviesController {
         trailerUrl: string | null;
         category: string | null;
         ageRating: string | null;
+        id: number;
     }>;
-    remove(id: string): Promise<{
-        id: string;
+    remove(id: number): Promise<{
         title: string;
         description: string | null;
         duration: number;
@@ -51,5 +50,6 @@ export declare class MoviesController {
         trailerUrl: string | null;
         category: string | null;
         ageRating: string | null;
+        id: number;
     }>;
 }

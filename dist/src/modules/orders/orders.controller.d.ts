@@ -5,18 +5,17 @@ export declare class OrdersController {
     private readonly ordersService;
     constructor(ordersService: OrdersService);
     checkout(checkoutDto: CheckoutDto, req: any): Promise<{
-        id: string;
-        totalPrice: number;
+        id: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        totalPrice: number;
         bookingCode: string;
         createdAt: Date;
-        userId: string;
+        userId: number;
     }>;
     findMyOrders(req: any): Promise<({
         tickets: ({
             showtime: {
                 movie: {
-                    id: string;
                     title: string;
                     description: string | null;
                     duration: number;
@@ -24,52 +23,52 @@ export declare class OrdersController {
                     trailerUrl: string | null;
                     category: string | null;
                     ageRating: string | null;
+                    id: number;
                 };
                 studio: {
                     cinema: {
-                        id: string;
+                        id: number;
                         name: string;
                         city: string;
                         address: string | null;
                     };
                 } & {
-                    id: string;
+                    id: number;
                     name: string;
-                    cinemaId: string;
+                    cinemaId: number;
                     totalCapacity: number;
                 };
             } & {
-                id: string;
-                movieId: string;
-                studioId: string;
+                id: number;
                 startTime: Date;
+                movieId: number;
+                studioId: number;
                 price: number;
             };
         } & {
-            id: string;
+            id: number;
             price: number;
-            showtimeId: string;
-            orderId: string;
-            seatId: string;
+            orderId: number;
+            showtimeId: number;
+            seatId: number;
         })[];
     } & {
-        id: string;
-        totalPrice: number;
+        id: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        totalPrice: number;
         bookingCode: string;
         createdAt: Date;
-        userId: string;
+        userId: number;
     })[]>;
     findAll(): Promise<({
         user: {
-            id: string;
+            id: number;
             name: string | null;
             email: string | null;
         };
         tickets: ({
             showtime: {
                 movie: {
-                    id: string;
                     title: string;
                     description: string | null;
                     duration: number;
@@ -77,58 +76,58 @@ export declare class OrdersController {
                     trailerUrl: string | null;
                     category: string | null;
                     ageRating: string | null;
+                    id: number;
                 };
                 studio: {
                     cinema: {
-                        id: string;
+                        id: number;
                         name: string;
                         city: string;
                         address: string | null;
                     };
                 } & {
-                    id: string;
+                    id: number;
                     name: string;
-                    cinemaId: string;
+                    cinemaId: number;
                     totalCapacity: number;
                 };
             } & {
-                id: string;
-                movieId: string;
-                studioId: string;
+                id: number;
                 startTime: Date;
+                movieId: number;
+                studioId: number;
                 price: number;
             };
         } & {
-            id: string;
+            id: number;
             price: number;
-            showtimeId: string;
-            orderId: string;
-            seatId: string;
+            orderId: number;
+            showtimeId: number;
+            seatId: number;
         })[];
     } & {
-        id: string;
-        totalPrice: number;
+        id: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        totalPrice: number;
         bookingCode: string;
         createdAt: Date;
-        userId: string;
+        userId: number;
     })[]>;
-    findOne(id: string, req: any): Promise<{
+    findOne(id: number, req: any): Promise<{
         user: {
-            id: string;
+            id: number;
             name: string | null;
             email: string | null;
         };
         tickets: ({
             seat: {
                 number: number;
-                id: string;
-                studioId: string;
+                id: number;
+                studioId: number;
                 row: string;
             };
             showtime: {
                 movie: {
-                    id: string;
                     title: string;
                     description: string | null;
                     duration: number;
@@ -136,56 +135,57 @@ export declare class OrdersController {
                     trailerUrl: string | null;
                     category: string | null;
                     ageRating: string | null;
+                    id: number;
                 };
                 studio: {
                     cinema: {
-                        id: string;
+                        id: number;
                         name: string;
                         city: string;
                         address: string | null;
                     };
                 } & {
-                    id: string;
+                    id: number;
                     name: string;
-                    cinemaId: string;
+                    cinemaId: number;
                     totalCapacity: number;
                 };
             } & {
-                id: string;
-                movieId: string;
-                studioId: string;
+                id: number;
                 startTime: Date;
+                movieId: number;
+                studioId: number;
                 price: number;
             };
         } & {
-            id: string;
+            id: number;
             price: number;
-            showtimeId: string;
-            orderId: string;
-            seatId: string;
+            orderId: number;
+            showtimeId: number;
+            seatId: number;
         })[];
     } & {
-        id: string;
-        totalPrice: number;
+        id: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        totalPrice: number;
         bookingCode: string;
         createdAt: Date;
-        userId: string;
+        userId: number;
     }>;
-    updateStatus(id: string, updateDto: UpdateOrderStatusDto): Promise<{
-        id: string;
-        totalPrice: number;
+    updateStatus(id: number, updateDto: UpdateOrderStatusDto): Promise<{
+        id: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        totalPrice: number;
         bookingCode: string;
         createdAt: Date;
-        userId: string;
+        userId: number;
     }>;
-    remove(id: string): Promise<{
-        id: string;
-        totalPrice: number;
+    remove(id: number): Promise<{
+        id: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        totalPrice: number;
         bookingCode: string;
         createdAt: Date;
-        userId: string;
+        userId: number;
     }>;
 }

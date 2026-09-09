@@ -1,6 +1,6 @@
 import { z } from 'zod';
 declare const CreateStudioDto_base: import("nestjs-zod").ZodDto<z.ZodObject<{
-    cinemaId: z.ZodString;
+    cinemaId: z.ZodCoercedNumber<unknown>;
     name: z.ZodString;
     rows: z.ZodNumber;
     seatsPerRow: z.ZodNumber;

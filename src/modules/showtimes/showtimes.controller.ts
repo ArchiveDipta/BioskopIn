@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {  Controller, Get, Post, Body, Patch, Param, Delete, UseGuards , ParseIntPipe } from '@nestjs/common';
 import { ShowtimesService } from './showtimes.service';
 import { CreateShowtimeDto } from './dto/create-showtime.dto';
 import { UpdateShowtimeDto } from './dto/update-showtime.dto';
@@ -23,7 +23,7 @@ export class ShowtimesController {
 
   @Get(':id/seats')
   @ApiOperation({ summary: 'Melihat ketersediaan kursi secara real-time (Publik)' })
-  getSeats(@Param('id') id: string) {
+  getSeats(@Param('id', ParseIntPipe) id: number) {
     return this.showtimesService.getSeatsAvailability(id);
   }
 
@@ -32,7 +32,7 @@ export class ShowtimesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Mengubah jadwal tayang (Khusus Admin)' })
-  update(@Param('id') id: string, @Body() updateShowtimeDto: UpdateShowtimeDto) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateShowtimeDto: UpdateShowtimeDto) {
     return this.showtimesService.update(id, updateShowtimeDto);
   }
 
@@ -41,7 +41,7 @@ export class ShowtimesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Menghapus jadwal tayang (Khusus Admin)' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.showtimesService.remove(id);
   }
 }

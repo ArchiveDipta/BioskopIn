@@ -2,8 +2,8 @@ import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const ShowtimeSchema = z.object({
-  movieId: z.string().min(1, 'Movie ID wajib diisi'),
-  studioId: z.string().min(1, 'Studio ID wajib diisi'),
+  movieId: z.coerce.number().int(),
+  studioId: z.coerce.number().int(),
   startTime: z.string().datetime('Format waktu salah (ISO-8601)'),
   price: z.number().positive('Harga tiket harus positif'),
 });

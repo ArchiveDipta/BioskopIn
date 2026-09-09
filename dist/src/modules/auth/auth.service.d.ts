@@ -13,7 +13,7 @@ export declare class AuthService {
         message: string;
         access_token: string;
         user: {
-            id: string;
+            id: number;
             name: string | null;
             email: string | null;
             emailVerified: Date | null;
@@ -26,7 +26,7 @@ export declare class AuthService {
         message: string;
         access_token: string;
         user: {
-            id: string;
+            id: number;
             name: string | null;
             email: string | null;
             emailVerified: Date | null;
@@ -38,7 +38,7 @@ export declare class AuthService {
     validateOAuthLogin(profile: any): Promise<{
         access_token: string;
         user: {
-            id: string;
+            id: number;
             name: string | null;
             email: string | null;
             emailVerified: Date | null;
@@ -50,7 +50,7 @@ export declare class AuthService {
     verifyAndroidToken(idToken: string): Promise<{
         access_token: string;
         user: {
-            id: string;
+            id: number;
             name: string | null;
             email: string | null;
             emailVerified: Date | null;
