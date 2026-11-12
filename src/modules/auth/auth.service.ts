@@ -34,6 +34,7 @@ export class AuthService {
         name: registerDto.name,
         email: registerDto.email,
         password: hashedPassword,
+        role: (registerDto as any).role ?? 'USER',
       },
     });
 
