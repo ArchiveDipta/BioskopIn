@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const orders_service_1 = require("./orders.service");
 const checkout_order_dto_1 = require("./dto/checkout-order.dto");
 const update_order_status_dto_1 = require("./dto/update-order-status.dto");
+const verify_ticket_dto_1 = require("./dto/verify-ticket.dto");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../common/guards/jwt-auth.guard");
 const roles_guard_1 = require("../../common/guards/roles.guard");
@@ -29,6 +30,9 @@ let OrdersController = class OrdersController {
     checkout(checkoutDto, req) {
         return this.ordersService.checkout(req.user.id, checkoutDto);
     }
+    verifyTicket(verifyDto) {
+        return this.ordersService.verifyTicket(verifyDto.bookingCode);
+    }
     findMyOrders(req) {
         return this.ordersService.findMyOrders(req.user.id);
     }
@@ -37,6 +41,9 @@ let OrdersController = class OrdersController {
     }
     findOne(id, req) {
         return this.ordersService.findOne(id, req.user);
+    }
+    getQrCode(id, req) {
+        return this.ordersService.generateQrCode(id, req.user);
     }
     updateStatus(id, updateDto) {
         return this.ordersService.updateStatus(id, updateDto);
@@ -48,13 +55,22 @@ let OrdersController = class OrdersController {
 exports.OrdersController = OrdersController;
 __decorate([
     (0, common_1.Post)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Membuat pesanan tiket baru (Checkout)' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Membuat pesanan tiket baru & F&B (Checkout)' }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [checkout_order_dto_1.CheckoutDto, Object]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "checkout", null);
+__decorate([
+    (0, common_1.Post)('verify-ticket'),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, swagger_1.ApiOperation)({ summary: 'Verifikasi tiket bioskop & check-in penonton oleh staf (Khusus Admin)' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [verify_ticket_dto_1.VerifyTicketDto]),
+    __metadata("design:returntype", void 0)
+], OrdersController.prototype, "verifyTicket", null);
 __decorate([
     (0, common_1.Get)('my-orders'),
     (0, swagger_1.ApiOperation)({ summary: 'Mengambil riwayat pesanan milik user yang sedang login' }),
@@ -80,6 +96,15 @@ __decorate([
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)(':id/qrcode'),
+    (0, swagger_1.ApiOperation)({ summary: 'Mendapatkan QR Code E-Ticket (DataURL Gambar)' }),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", void 0)
+], OrdersController.prototype, "getQrCode", null);
 __decorate([
     (0, common_1.Patch)(':id/status'),
     (0, roles_decorator_1.Roles)('ADMIN'),

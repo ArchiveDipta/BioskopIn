@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const showtimes_service_1 = require("./showtimes.service");
 const create_showtime_dto_1 = require("./dto/create-showtime.dto");
 const update_showtime_dto_1 = require("./dto/update-showtime.dto");
+const hold_seats_dto_1 = require("./dto/hold-seats.dto");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../common/guards/jwt-auth.guard");
 const roles_guard_1 = require("../../common/guards/roles.guard");
@@ -28,6 +29,9 @@ let ShowtimesController = class ShowtimesController {
     }
     create(createShowtimeDto) {
         return this.showtimesService.create(createShowtimeDto);
+    }
+    holdSeats(id, holdSeatsDto, req) {
+        return this.showtimesService.holdSeats(id, req.user.id, holdSeatsDto.seatIds);
     }
     findAll(movieId, cinemaId, studioId) {
         return this.showtimesService.findAll(movieId, studioId, cinemaId);
@@ -57,6 +61,18 @@ __decorate([
     __metadata("design:paramtypes", [create_showtime_dto_1.CreateShowtimeDto]),
     __metadata("design:returntype", void 0)
 ], ShowtimesController.prototype, "create", null);
+__decorate([
+    (0, common_1.Post)(':id/hold-seats'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiOperation)({ summary: 'Mengunci kursi sementara selama 10 menit (Seat Hold)' }),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, hold_seats_dto_1.HoldSeatsDto, Object]),
+    __metadata("design:returntype", void 0)
+], ShowtimesController.prototype, "holdSeats", null);
 __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiOperation)({ summary: 'Melihat semua jadwal tayang dengan filter (Publik)' }),

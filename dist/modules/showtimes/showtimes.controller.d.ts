@@ -1,6 +1,7 @@
 import { ShowtimesService } from './showtimes.service';
 import { CreateShowtimeDto } from './dto/create-showtime.dto';
 import { UpdateShowtimeDto } from './dto/update-showtime.dto';
+import { HoldSeatsDto } from './dto/hold-seats.dto';
 export declare class ShowtimesController {
     private readonly showtimesService;
     constructor(showtimesService: ShowtimesService);
@@ -34,6 +35,12 @@ export declare class ShowtimesController {
         movieId: number;
         studioId: number;
         price: number;
+    }>;
+    holdSeats(id: number, holdSeatsDto: HoldSeatsDto, req: any): Promise<{
+        message: string;
+        showtimeId: number;
+        heldSeatIds: number[];
+        expiresAt: Date;
     }>;
     findAll(movieId?: number, cinemaId?: number, studioId?: number): Promise<({
         movie: {
@@ -99,6 +106,7 @@ export declare class ShowtimesController {
     }>;
     getSeats(id: number): Promise<{
         isAvailable: boolean;
+        status: "AVAILABLE" | "BOOKED" | "LOCKED" | "HELD_BY_YOU";
         number: number;
         id: number;
         studioId: number;

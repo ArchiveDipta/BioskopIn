@@ -96,8 +96,15 @@ export declare class ShowtimesService {
         studioId: number;
         price: number;
     }>;
-    getSeatsAvailability(showtimeId: number): Promise<{
+    holdSeats(showtimeId: number, userId: number, seatIds: number[]): Promise<{
+        message: string;
+        showtimeId: number;
+        heldSeatIds: number[];
+        expiresAt: Date;
+    }>;
+    getSeatsAvailability(showtimeId: number, currentUserId?: number): Promise<{
         isAvailable: boolean;
+        status: "AVAILABLE" | "BOOKED" | "LOCKED" | "HELD_BY_YOU";
         number: number;
         id: number;
         studioId: number;

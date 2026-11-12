@@ -58,6 +58,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   orders        Order[]
+  seatHolds     SeatHold[]
+  reviews       Review[]
 }
 
 model VerificationToken {
@@ -81,6 +83,7 @@ model Movie {
   category    String?    // e.g., Action, Drama, Slice of Life
   ageRating   String?    // e.g., SU, R13+, R18+
   showtimes   Showtime[]
+  reviews     Review[]
 }
 
 model Cinema {
@@ -110,6 +113,7 @@ model Seat {
   
   studio    Studio        @relation(fields: [studioId], references: [id], onDelete: Cascade)
   tickets   OrderTicket[]
+  seatHolds SeatHold[]
 
   // Aturan Ketat: Tidak boleh ada kursi ganda di studio yang sama
   @@unique([studioId, row, number])
@@ -125,6 +129,7 @@ model Showtime {
   movie     Movie         @relation(fields: [movieId], references: [id], onDelete: Cascade)
   studio    Studio        @relation(fields: [studioId], references: [id], onDelete: Cascade)
   tickets   OrderTicket[]
+  seatHolds SeatHold[]
 }
 
 enum OrderStatus {
@@ -135,15 +140,18 @@ enum OrderStatus {
 }
 
 model Order {
-  id Int @id @default(autoincrement())
-  userId Int
+  id          Int           @id @default(autoincrement())
+  userId      Int
   totalPrice  Float
   status      OrderStatus   @default(PENDING)
   bookingCode String        @unique // 8 characters random string
+  isCheckedIn Boolean       @default(false)
+  checkedInAt DateTime?
   createdAt   DateTime      @default(now())
   
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   tickets     OrderTicket[]
+  foodItems   OrderFoodItem[]
 }
 
 model OrderTicket {
@@ -159,4 +167,66 @@ model OrderTicket {
 
   // Aturan Sangat Ketat (Pencegahan Double-Booking)
   @@unique([showtimeId, seatId]) 
+}
+
+// ==============================
+// FITUR 3: SEAT HOLD (TIMER 10 MENIT)
+// ==============================
+model SeatHold {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  showtimeId Int
+  seatId     Int
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  showtime Showtime @relation(fields: [showtimeId], references: [id], onDelete: Cascade)
+  seat     Seat     @relation(fields: [seatId], references: [id], onDelete: Cascade)
+
+  @@unique([showtimeId, seatId])
+}
+
+// ==============================
+// FITUR 4: MAKANAN & MINUMAN (F&B)
+// ==============================
+model FoodItem {
+  id          Int             @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  imageUrl    String?
+  category    String          // e.g. 'SNACK', 'BEVERAGE', 'COMBO'
+  isAvailable Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+
+  orderItems  OrderFoodItem[]
+}
+
+model OrderFoodItem {
+  id         Int      @id @default(autoincrement())
+  orderId    Int
+  foodItemId Int
+  quantity   Int
+  price      Float
+
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  foodItem FoodItem @relation(fields: [foodItemId], references: [id], onDelete: Cascade)
+}
+
+// ==============================
+// FITUR 5: RATING & ULASAN FILM
+// ==============================
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  movieId   Int
+  rating    Int      // 1 sampai 5
+  comment   String?  @db.Text
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])
 }

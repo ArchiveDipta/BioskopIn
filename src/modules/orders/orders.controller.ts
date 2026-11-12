@@ -1,7 +1,8 @@
-import {  Controller, Get, Post, Body, Req, Param, Patch, Delete, UseGuards , ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Param, Patch, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CheckoutDto } from './dto/checkout-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { VerifyTicketDto } from './dto/verify-ticket.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -15,10 +16,16 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Membuat pesanan tiket baru (Checkout)' })
+  @ApiOperation({ summary: 'Membuat pesanan tiket baru & F&B (Checkout)' })
   checkout(@Body() checkoutDto: CheckoutDto, @Req() req: any) {
-    // userId didapat otomatis dari token JWT yang sudah di-decode oleh AuthGuard
     return this.ordersService.checkout(req.user.id, checkoutDto);
+  }
+
+  @Post('verify-ticket')
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'Verifikasi tiket bioskop & check-in penonton oleh staf (Khusus Admin)' })
+  verifyTicket(@Body() verifyDto: VerifyTicketDto) {
+    return this.ordersService.verifyTicket(verifyDto.bookingCode);
   }
 
   @Get('my-orders')
@@ -38,6 +45,12 @@ export class OrdersController {
   @ApiOperation({ summary: 'Mengambil detail satu pesanan (Hanya pemilik atau Admin)' })
   findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     return this.ordersService.findOne(id, req.user);
+  }
+
+  @Get(':id/qrcode')
+  @ApiOperation({ summary: 'Mendapatkan QR Code E-Ticket (DataURL Gambar)' })
+  getQrCode(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+    return this.ordersService.generateQrCode(id, req.user);
   }
 
   @Patch(':id/status')

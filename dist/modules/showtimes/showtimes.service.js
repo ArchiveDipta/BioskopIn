@@ -74,7 +74,72 @@ let ShowtimesService = class ShowtimesService {
         }
         return showtime;
     }
-    async getSeatsAvailability(showtimeId) {
+    async holdSeats(showtimeId, userId, seatIds) {
+        const now = new Date();
+        await this.prisma.seatHold.deleteMany({
+            where: { expiresAt: { lte: now } },
+        });
+        const showtime = await this.prisma.showtime.findUnique({
+            where: { id: showtimeId },
+        });
+        if (!showtime) {
+            throw new common_1.NotFoundException('Jadwal tayang tidak ditemukan');
+        }
+        const validSeats = await this.prisma.seat.findMany({
+            where: {
+                id: { in: seatIds },
+                studioId: showtime.studioId,
+            },
+        });
+        if (validSeats.length !== seatIds.length) {
+            throw new common_1.BadRequestException('Satu atau lebih kursi tidak valid untuk studio pada jadwal ini');
+        }
+        const alreadyBooked = await this.prisma.orderTicket.findMany({
+            where: {
+                showtimeId,
+                seatId: { in: seatIds },
+            },
+        });
+        if (alreadyBooked.length > 0) {
+            throw new common_1.ConflictException('Satu atau lebih kursi telah dibeli pengguna lain');
+        }
+        const activeHolds = await this.prisma.seatHold.findMany({
+            where: {
+                showtimeId,
+                seatId: { in: seatIds },
+                userId: { not: userId },
+                expiresAt: { gt: now },
+            },
+        });
+        if (activeHolds.length > 0) {
+            throw new common_1.ConflictException('Satu atau lebih kursi sedang dikunci sementara oleh pengguna lain');
+        }
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+        return this.prisma.$transaction(async (tx) => {
+            await tx.seatHold.deleteMany({
+                where: { showtimeId, userId },
+            });
+            await tx.seatHold.createMany({
+                data: seatIds.map((seatId) => ({
+                    showtimeId,
+                    userId,
+                    seatId,
+                    expiresAt,
+                })),
+            });
+            return {
+                message: 'Kursi berhasil dikunci selama 10 menit',
+                showtimeId,
+                heldSeatIds: seatIds,
+                expiresAt,
+            };
+        });
+    }
+    async getSeatsAvailability(showtimeId, currentUserId) {
+        const now = new Date();
+        await this.prisma.seatHold.deleteMany({
+            where: { expiresAt: { lte: now } },
+        });
         const showtime = await this.prisma.showtime.findUnique({
             where: { id: showtimeId },
             include: {
@@ -90,10 +155,37 @@ let ShowtimesService = class ShowtimesService {
             throw new common_1.NotFoundException('Jadwal tayang tidak ditemukan');
         }
         const bookedSeatIds = new Set(showtime.tickets.map((t) => t.seatId));
-        const seatsWithAvailability = showtime.studio.seats.map((seat) => ({
-            ...seat,
-            isAvailable: !bookedSeatIds.has(seat.id),
-        }));
+        const activeHolds = await this.prisma.seatHold.findMany({
+            where: {
+                showtimeId,
+                expiresAt: { gt: now },
+            },
+        });
+        const heldMap = new Map(activeHolds.map((h) => [h.seatId, h.userId]));
+        const seatsWithAvailability = showtime.studio.seats.map((seat) => {
+            let status = 'AVAILABLE';
+            let isAvailable = true;
+            if (bookedSeatIds.has(seat.id)) {
+                status = 'BOOKED';
+                isAvailable = false;
+            }
+            else if (heldMap.has(seat.id)) {
+                const heldUserId = heldMap.get(seat.id);
+                if (currentUserId && heldUserId === currentUserId) {
+                    status = 'HELD_BY_YOU';
+                    isAvailable = true;
+                }
+                else {
+                    status = 'LOCKED';
+                    isAvailable = false;
+                }
+            }
+            return {
+                ...seat,
+                isAvailable,
+                status,
+            };
+        });
         return seatsWithAvailability;
     }
     async update(id, updateShowtimeDto) {

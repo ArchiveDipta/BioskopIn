@@ -3,6 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CheckoutDto = void 0;
 const nestjs_zod_1 = require("nestjs-zod");
 const zod_1 = require("zod");
+const FoodOrderItemSchema = zod_1.z.object({
+    foodItemId: zod_1.z.coerce.number().int().positive(),
+    quantity: zod_1.z.coerce.number().int().positive(),
+});
 const CheckoutSchema = zod_1.z.object({
     showtimeId: zod_1.z.coerce.number().int(),
     seatIds: zod_1.z
@@ -11,6 +15,7 @@ const CheckoutSchema = zod_1.z.object({
         .refine((items) => new Set(items).size === items.length, {
         message: 'Terdapat duplikasi kursi',
     }),
+    foodItems: zod_1.z.array(FoodOrderItemSchema).optional(),
 });
 class CheckoutDto extends (0, nestjs_zod_1.createZodDto)(CheckoutSchema) {
 }

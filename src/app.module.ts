@@ -10,9 +10,23 @@ import { StorageModule } from './modules/storage/storage.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { StudiosModule } from './modules/studios/studios.module';
 import { CinemasModule } from './modules/cinemas/cinemas.module';
+import { FoodsModule } from './modules/foods/foods.module';
+import { ReviewsModule } from './modules/reviews/reviews.module';
 
 @Module({
-  imports: [PrismaModule, MoviesModule, ShowtimesModule, OrdersModule, AnalyticsModule, StorageModule, AuthModule, StudiosModule, CinemasModule],
+  imports: [
+    PrismaModule,
+    MoviesModule,
+    ShowtimesModule,
+    OrdersModule,
+    AnalyticsModule,
+    StorageModule,
+    AuthModule,
+    StudiosModule,
+    CinemasModule,
+    FoodsModule,
+    ReviewsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

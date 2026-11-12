@@ -19,12 +19,26 @@ const storage_module_1 = require("./modules/storage/storage.module");
 const auth_module_1 = require("./modules/auth/auth.module");
 const studios_module_1 = require("./modules/studios/studios.module");
 const cinemas_module_1 = require("./modules/cinemas/cinemas.module");
+const foods_module_1 = require("./modules/foods/foods.module");
+const reviews_module_1 = require("./modules/reviews/reviews.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, movies_module_1.MoviesModule, showtimes_module_1.ShowtimesModule, orders_module_1.OrdersModule, analytics_module_1.AnalyticsModule, storage_module_1.StorageModule, auth_module_1.AuthModule, studios_module_1.StudiosModule, cinemas_module_1.CinemasModule],
+        imports: [
+            prisma_module_1.PrismaModule,
+            movies_module_1.MoviesModule,
+            showtimes_module_1.ShowtimesModule,
+            orders_module_1.OrdersModule,
+            analytics_module_1.AnalyticsModule,
+            storage_module_1.StorageModule,
+            auth_module_1.AuthModule,
+            studios_module_1.StudiosModule,
+            cinemas_module_1.CinemasModule,
+            foods_module_1.FoodsModule,
+            reviews_module_1.ReviewsModule,
+        ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

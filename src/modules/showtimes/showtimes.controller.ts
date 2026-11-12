@@ -1,7 +1,8 @@
-import {  Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Req, ParseIntPipe } from '@nestjs/common';
 import { ShowtimesService } from './showtimes.service';
 import { CreateShowtimeDto } from './dto/create-showtime.dto';
 import { UpdateShowtimeDto } from './dto/update-showtime.dto';
+import { HoldSeatsDto } from './dto/hold-seats.dto';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -19,6 +20,18 @@ export class ShowtimesController {
   @ApiOperation({ summary: 'Membuat jadwal tayang baru (Khusus Admin)' })
   create(@Body() createShowtimeDto: CreateShowtimeDto) {
     return this.showtimesService.create(createShowtimeDto);
+  }
+
+  @Post(':id/hold-seats')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Mengunci kursi sementara selama 10 menit (Seat Hold)' })
+  holdSeats(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() holdSeatsDto: HoldSeatsDto,
+    @Req() req: any,
+  ) {
+    return this.showtimesService.holdSeats(id, req.user.id, holdSeatsDto.seatIds);
   }
 
   @Get()
