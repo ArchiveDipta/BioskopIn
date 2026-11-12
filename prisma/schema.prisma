@@ -145,6 +145,10 @@ model Order {
   totalPrice  Float
   status      OrderStatus   @default(PENDING)
   bookingCode String        @unique // 8 characters random string
+  snapToken   String?
+  paymentUrl  String?
+  paymentType String?
+  paidAt      DateTime?
   isCheckedIn Boolean       @default(false)
   checkedInAt DateTime?
   createdAt   DateTime      @default(now())

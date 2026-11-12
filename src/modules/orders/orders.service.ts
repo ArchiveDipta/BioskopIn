@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CheckoutDto } from './dto/checkout-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import * as QRCode from 'qrcode';
+import axios from 'axios';
 
 @Injectable()
 export class OrdersService {
@@ -12,11 +13,52 @@ export class OrdersService {
     return Math.random().toString(36).substring(2, 10).toUpperCase();
   }
 
+  private async createPaymentSession(order: any, user: any) {
+    const serverKey = process.env.MIDTRANS_SERVER_KEY;
+    if (serverKey) {
+      try {
+        const auth = Buffer.from(serverKey + ':').toString('base64');
+        const res = await axios.post(
+          'https://app.sandbox.midtrans.com/snap/v1/transactions',
+          {
+            transaction_details: {
+              order_id: `ORDER-${order.id}-${order.bookingCode}`,
+              gross_amount: Math.round(order.totalPrice),
+            },
+            customer_details: {
+              first_name: user?.name || 'Customer',
+              email: user?.email || 'customer@bioskopin.com',
+            },
+          },
+          {
+            headers: {
+              Authorization: `Basic ${auth}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        return {
+          snapToken: res.data.token,
+          paymentUrl: res.data.redirect_url,
+        };
+      } catch (err: any) {
+        console.error('Midtrans Snap Error:', err?.response?.data || err?.message);
+      }
+    }
+
+    // Fallback Simulator Mode jika MIDTRANS_SERVER_KEY belum diisi
+    return {
+      snapToken: `mock_snap_${order.bookingCode}`,
+      paymentUrl: `https://bioskopin-production.up.railway.app/orders/${order.id}/pay`,
+    };
+  }
+
   async checkout(userId: number, checkoutDto: CheckoutDto) {
     const { showtimeId, seatIds, foodItems } = checkoutDto;
 
     try {
       const order = await this.prisma.$transaction(async (tx) => {
+        const user = await tx.user.findUnique({ where: { id: userId } });
         const showtime = await tx.showtime.findUnique({
           where: { id: showtimeId },
         });
@@ -82,13 +124,23 @@ export class OrdersService {
           data: {
             userId,
             totalPrice,
-            status: 'SUCCESS',
+            status: 'PENDING',
             bookingCode,
           },
         });
 
+        const paymentSession = await this.createPaymentSession(newOrder, user);
+
+        const updatedOrder = await tx.order.update({
+          where: { id: newOrder.id },
+          data: {
+            snapToken: paymentSession.snapToken,
+            paymentUrl: paymentSession.paymentUrl,
+          },
+        });
+
         const orderTicketsData = seatIds.map((seatId) => ({
-          orderId: newOrder.id,
+          orderId: updatedOrder.id,
           showtimeId,
           seatId,
           price: showtime.price,
@@ -101,7 +153,7 @@ export class OrdersService {
         if (foodOrderData.length > 0) {
           await tx.orderFoodItem.createMany({
             data: foodOrderData.map((f) => ({
-              orderId: newOrder.id,
+              orderId: updatedOrder.id,
               ...f,
             })),
           });
@@ -116,10 +168,10 @@ export class OrdersService {
           },
         });
 
-        return newOrder;
+        return updatedOrder;
       });
 
-      // Kembalikan data lengkap pesanan beserta tiket, film, studio, kursi, dan F&B
+      // Kembalikan data lengkap pesanan beserta tiket, film, studio, kursi, F&B, dan URL pembayaran
       return this.prisma.order.findUnique({
         where: { id: order.id },
         include: {
@@ -147,6 +199,82 @@ export class OrdersService {
       }
       throw error;
     }
+  }
+
+  async simulatePay(orderId: number, user: any) {
+    const order = await this.prisma.order.findUnique({ where: { id: orderId } });
+    if (!order) throw new NotFoundException('Pesanan tidak ditemukan');
+    if (user.role !== 'ADMIN' && order.userId !== user.id) {
+      throw new ForbiddenException('Anda tidak berhak membayar pesanan ini');
+    }
+    if (order.status === 'SUCCESS') {
+      throw new ConflictException('Pesanan ini sudah berhasil dibayar sebelumnya');
+    }
+
+    return this.prisma.order.update({
+      where: { id: orderId },
+      data: {
+        status: 'SUCCESS',
+        paidAt: new Date(),
+        paymentType: 'MOCK_SIMULATION',
+      },
+      include: {
+        tickets: {
+          include: {
+            seat: true,
+            showtime: {
+              include: {
+                movie: true,
+                studio: { include: { cinema: true } },
+              },
+            },
+          },
+        },
+        foodItems: {
+          include: {
+            foodItem: true,
+          },
+        },
+      },
+    });
+  }
+
+  async handleMidtransWebhook(body: any) {
+    const { order_id, transaction_status, payment_type } = body;
+    if (!order_id) throw new BadRequestException('Payload notifikasi tidak valid');
+
+    // Format order_id: ORDER-{id}-{bookingCode}
+    const parts = order_id.split('-');
+    const id = parseInt(parts[1], 10);
+    if (!id) return { message: 'Order ID tidak valid' };
+
+    const order = await this.prisma.order.findUnique({ where: { id } });
+    if (!order) return { message: 'Pesanan tidak ditemukan' };
+
+    if (transaction_status === 'capture' || transaction_status === 'settlement') {
+      await this.prisma.order.update({
+        where: { id },
+        data: {
+          status: 'SUCCESS',
+          paidAt: new Date(),
+          paymentType: payment_type || 'MIDTRANS',
+        },
+      });
+      return { message: 'Pembayaran sukses tercatat' };
+    }
+
+    if (transaction_status === 'cancel' || transaction_status === 'expire' || transaction_status === 'deny') {
+      await this.prisma.$transaction(async (tx) => {
+        await tx.orderTicket.deleteMany({ where: { orderId: id } });
+        await tx.order.update({
+          where: { id },
+          data: { status: 'CANCELLED' },
+        });
+      });
+      return { message: 'Pesanan dibatalkan dan kursi dilepaskan kembali' };
+    }
+
+    return { message: 'Status transaksi diperbarui', status: transaction_status };
   }
 
   async generateQrCode(orderId: number, user: any) {
@@ -324,7 +452,7 @@ export class OrdersService {
         tickets: {
           include: {
             seat: true,
-            showtime: {
+            showtime: { 
               include: { 
                 movie: true, 
                 studio: { include: { cinema: true } } 

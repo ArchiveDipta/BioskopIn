@@ -30,6 +30,9 @@ let OrdersController = class OrdersController {
     checkout(checkoutDto, req) {
         return this.ordersService.checkout(req.user.id, checkoutDto);
     }
+    simulatePay(id, req) {
+        return this.ordersService.simulatePay(id, req.user);
+    }
     verifyTicket(verifyDto) {
         return this.ordersService.verifyTicket(verifyDto.bookingCode);
     }
@@ -62,6 +65,15 @@ __decorate([
     __metadata("design:paramtypes", [checkout_order_dto_1.CheckoutDto, Object]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "checkout", null);
+__decorate([
+    (0, common_1.Post)(':id/pay'),
+    (0, swagger_1.ApiOperation)({ summary: 'Simulasi pembayaran pesanan tiket (Mengubah status PENDING -> SUCCESS)' }),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", void 0)
+], OrdersController.prototype, "simulatePay", null);
 __decorate([
     (0, common_1.Post)('verify-ticket'),
     (0, roles_decorator_1.Roles)('ADMIN'),

@@ -74,11 +74,93 @@ export declare class OrdersController {
         userId: number;
         createdAt: Date;
         status: import(".prisma/client").$Enums.OrderStatus;
-        totalPrice: number;
         bookingCode: string;
+        totalPrice: number;
+        snapToken: string | null;
+        paymentUrl: string | null;
+        paymentType: string | null;
+        paidAt: Date | null;
         isCheckedIn: boolean;
         checkedInAt: Date | null;
     }) | null>;
+    simulatePay(id: number, req: any): Promise<{
+        tickets: ({
+            seat: {
+                number: number;
+                id: number;
+                studioId: number;
+                row: string;
+            };
+            showtime: {
+                movie: {
+                    title: string;
+                    description: string | null;
+                    duration: number;
+                    posterUrl: string | null;
+                    trailerUrl: string | null;
+                    category: string | null;
+                    ageRating: string | null;
+                    id: number;
+                };
+                studio: {
+                    cinema: {
+                        id: number;
+                        name: string;
+                        city: string;
+                        address: string | null;
+                    };
+                } & {
+                    id: number;
+                    name: string;
+                    cinemaId: number;
+                    totalCapacity: number;
+                };
+            } & {
+                id: number;
+                startTime: Date;
+                movieId: number;
+                studioId: number;
+                price: number;
+            };
+        } & {
+            id: number;
+            price: number;
+            orderId: number;
+            showtimeId: number;
+            seatId: number;
+        })[];
+        foodItems: ({
+            foodItem: {
+                description: string | null;
+                category: string;
+                id: number;
+                name: string;
+                price: number;
+                createdAt: Date;
+                imageUrl: string | null;
+                isAvailable: boolean;
+            };
+        } & {
+            id: number;
+            price: number;
+            orderId: number;
+            foodItemId: number;
+            quantity: number;
+        })[];
+    } & {
+        id: number;
+        userId: number;
+        createdAt: Date;
+        status: import(".prisma/client").$Enums.OrderStatus;
+        bookingCode: string;
+        totalPrice: number;
+        snapToken: string | null;
+        paymentUrl: string | null;
+        paymentType: string | null;
+        paidAt: Date | null;
+        isCheckedIn: boolean;
+        checkedInAt: Date | null;
+    }>;
     verifyTicket(verifyDto: VerifyTicketDto): Promise<{
         message: string;
         checkedInAt: Date | null;
@@ -156,8 +238,12 @@ export declare class OrdersController {
             userId: number;
             createdAt: Date;
             status: import(".prisma/client").$Enums.OrderStatus;
-            totalPrice: number;
             bookingCode: string;
+            totalPrice: number;
+            snapToken: string | null;
+            paymentUrl: string | null;
+            paymentType: string | null;
+            paidAt: Date | null;
             isCheckedIn: boolean;
             checkedInAt: Date | null;
         };
@@ -231,8 +317,12 @@ export declare class OrdersController {
         userId: number;
         createdAt: Date;
         status: import(".prisma/client").$Enums.OrderStatus;
-        totalPrice: number;
         bookingCode: string;
+        totalPrice: number;
+        snapToken: string | null;
+        paymentUrl: string | null;
+        paymentType: string | null;
+        paidAt: Date | null;
         isCheckedIn: boolean;
         checkedInAt: Date | null;
     })[]>;
@@ -310,8 +400,12 @@ export declare class OrdersController {
         userId: number;
         createdAt: Date;
         status: import(".prisma/client").$Enums.OrderStatus;
-        totalPrice: number;
         bookingCode: string;
+        totalPrice: number;
+        snapToken: string | null;
+        paymentUrl: string | null;
+        paymentType: string | null;
+        paidAt: Date | null;
         isCheckedIn: boolean;
         checkedInAt: Date | null;
     })[]>;
@@ -389,8 +483,12 @@ export declare class OrdersController {
         userId: number;
         createdAt: Date;
         status: import(".prisma/client").$Enums.OrderStatus;
-        totalPrice: number;
         bookingCode: string;
+        totalPrice: number;
+        snapToken: string | null;
+        paymentUrl: string | null;
+        paymentType: string | null;
+        paidAt: Date | null;
         isCheckedIn: boolean;
         checkedInAt: Date | null;
     }>;
@@ -409,8 +507,12 @@ export declare class OrdersController {
         userId: number;
         createdAt: Date;
         status: import(".prisma/client").$Enums.OrderStatus;
-        totalPrice: number;
         bookingCode: string;
+        totalPrice: number;
+        snapToken: string | null;
+        paymentUrl: string | null;
+        paymentType: string | null;
+        paidAt: Date | null;
         isCheckedIn: boolean;
         checkedInAt: Date | null;
     }>;
@@ -419,8 +521,12 @@ export declare class OrdersController {
         userId: number;
         createdAt: Date;
         status: import(".prisma/client").$Enums.OrderStatus;
-        totalPrice: number;
         bookingCode: string;
+        totalPrice: number;
+        snapToken: string | null;
+        paymentUrl: string | null;
+        paymentType: string | null;
+        paidAt: Date | null;
         isCheckedIn: boolean;
         checkedInAt: Date | null;
     }>;

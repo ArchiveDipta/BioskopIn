@@ -21,6 +21,12 @@ export class OrdersController {
     return this.ordersService.checkout(req.user.id, checkoutDto);
   }
 
+  @Post(':id/pay')
+  @ApiOperation({ summary: 'Simulasi pembayaran pesanan tiket (Mengubah status PENDING -> SUCCESS)' })
+  simulatePay(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+    return this.ordersService.simulatePay(id, req.user);
+  }
+
   @Post('verify-ticket')
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Verifikasi tiket bioskop & check-in penonton oleh staf (Khusus Admin)' })
