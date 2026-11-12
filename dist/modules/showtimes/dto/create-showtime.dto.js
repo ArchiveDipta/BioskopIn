@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CreateShowtimeDto = exports.ShowtimeSchema = void 0;
+const nestjs_zod_1 = require("nestjs-zod");
+const zod_1 = require("zod");
+exports.ShowtimeSchema = zod_1.z.object({
+    movieId: zod_1.z.coerce.number().int(),
+    studioId: zod_1.z.coerce.number().int(),
+    startTime: zod_1.z.string().datetime('Format waktu salah (ISO-8601)'),
+    price: zod_1.z.coerce.number().positive('Harga tiket harus positif'),
+});
+class CreateShowtimeDto extends (0, nestjs_zod_1.createZodDto)(exports.ShowtimeSchema) {
+}
+exports.CreateShowtimeDto = CreateShowtimeDto;
+//# sourceMappingURL=create-showtime.dto.js.map

@@ -23,7 +23,7 @@ export class StudiosController {
   @Get()
   @ApiOperation({ summary: 'Melihat semua studio' })
   @ApiQuery({ name: 'cinemaId', required: false, description: 'Filter berdasarkan ID Bioskop' })
-  findAll(@Query('cinemaId') cinemaId?: number) {
+  findAll(@Query('cinemaId', new ParseIntPipe({ optional: true })) cinemaId?: number) {
     return this.studiosService.findAll(cinemaId);
   }
 

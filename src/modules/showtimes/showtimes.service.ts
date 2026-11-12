@@ -12,7 +12,59 @@ export class ShowtimesService {
         ...createShowtimeDto,
         startTime: new Date(createShowtimeDto.startTime),
       },
+      include: {
+        movie: true,
+        studio: {
+          include: {
+            cinema: true,
+          },
+        },
+      },
     });
+  }
+
+  async findAll(movieId?: number, studioId?: number, cinemaId?: number) {
+    const where: any = {};
+    if (movieId) where.movieId = movieId;
+    if (studioId) where.studioId = studioId;
+    if (cinemaId) {
+      where.studio = { cinemaId };
+    }
+
+    return this.prisma.showtime.findMany({
+      where,
+      include: {
+        movie: true,
+        studio: {
+          include: {
+            cinema: true,
+          },
+        },
+      },
+      orderBy: {
+        startTime: 'asc',
+      },
+    });
+  }
+
+  async findOne(id: number) {
+    const showtime = await this.prisma.showtime.findUnique({
+      where: { id },
+      include: {
+        movie: true,
+        studio: {
+          include: {
+            cinema: true,
+          },
+        },
+      },
+    });
+
+    if (!showtime) {
+      throw new NotFoundException('Jadwal tayang tidak ditemukan');
+    }
+
+    return showtime;
   }
 
   async getSeatsAvailability(showtimeId: number) {

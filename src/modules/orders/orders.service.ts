@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CheckoutDto } from './dto/checkout-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
@@ -21,7 +21,31 @@ export class OrdersService {
         });
 
         if (!showtime) {
-          throw new NotFoundException('Jadwal tidak ditemukan');
+          throw new NotFoundException('Jadwal tayang tidak ditemukan');
+        }
+
+        // Validasi: pastikan semua kursi yang dipilih terdaftar di studio jadwal ini
+        const validSeats = await tx.seat.findMany({
+          where: {
+            id: { in: seatIds },
+            studioId: showtime.studioId,
+          },
+        });
+
+        if (validSeats.length !== seatIds.length) {
+          throw new BadRequestException('Satu atau lebih kursi tidak valid untuk studio pada jadwal ini');
+        }
+
+        // Validasi: pastikan kursi belum dipesan orang lain
+        const alreadyBooked = await tx.orderTicket.findMany({
+          where: {
+            showtimeId,
+            seatId: { in: seatIds },
+          },
+        });
+
+        if (alreadyBooked.length > 0) {
+          throw new ConflictException('Mohon maaf, satu atau lebih kursi yang Anda pilih telah dipesan orang lain.');
         }
 
         const totalPrice = showtime.price * seatIds.length;
@@ -50,7 +74,23 @@ export class OrdersService {
         return newOrder;
       });
 
-      return order;
+      // Kembalikan data lengkap pesanan beserta tiket, film, studio, dan nomor kursi
+      return this.prisma.order.findUnique({
+        where: { id: order.id },
+        include: {
+          tickets: {
+            include: {
+              seat: true,
+              showtime: {
+                include: {
+                  movie: true,
+                  studio: { include: { cinema: true } },
+                },
+              },
+            },
+          },
+        },
+      });
     } catch (error: any) {
       if (error.code === 'P2002') {
         throw new ConflictException('Mohon maaf, kursi telah dipesan orang lain.');
@@ -122,7 +162,7 @@ export class OrdersService {
     
     // Authorization Check
     if (user.role !== 'ADMIN' && order.userId !== user.id) {
-      throw new ConflictException('Anda tidak berhak melihat pesanan ini');
+      throw new ForbiddenException('Anda tidak berhak melihat pesanan ini');
     }
     
     return order;

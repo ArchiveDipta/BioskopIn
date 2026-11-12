@@ -30,6 +30,12 @@ export class MoviesController {
     return this.moviesService.findAllActive();
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Melihat detail film beserta jadwal tayangnya (Publik)' })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.moviesService.findOne(id);
+  }
+
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
